@@ -1,4 +1,3 @@
-
 -- Just some random collection of reimplementations and other functions
 -- that I've wrote while reading http://learnyouahaskell.com/
 
