@@ -16,3 +16,5 @@ Or I just felt need for some challenge.
 Anyway, somehow dubbing into my first AoC I decided to also learn Haskell.
 It's pretty cool tbh. And as far, it wasn't that hard after all ;)
 
+ps. to actually do first few days of AoC in time, [I've done them in JS](https://observablehq.com/@ajur/advent-of-code-2021),
+using fantastic [ObservableHQ notebooks](https://observablehq.com/).
