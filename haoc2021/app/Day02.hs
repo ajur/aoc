@@ -1,10 +1,16 @@
-import System.Environment
+-- Advent Of Code 2021 Day 2
+-- https://adventofcode.com/2021/day/2
+
+-- solution by Adam Jurczyk
+-- https://github.com/ajur/aoc
+
+import Tools
 
 main :: IO ()
 main = do
-    args <- getArgs
-    contents <- readFile $ head args
-    let ls = parseLines $ lines contents
+    inputData <- readInput sampleData
+    
+    let ls = parseLines $ lines inputData
     
     -- putStrLn $ unlines (["> " ++ x ++ " " ++ (show y) | (x,y) <- ls])
 
@@ -53,3 +59,12 @@ aimedStep "up"      x (p, d, a) = (p, d, a - x)
 
 dropLast :: (Int, Int, Int) -> (Int, Int)
 dropLast (x,y,z) = (x,y)
+
+sampleData :: String
+sampleData = "\
+    \forward 5\n\
+    \down 5\n\
+    \forward 8\n\
+    \up 3\n\
+    \down 8\n\
+    \forward 2"

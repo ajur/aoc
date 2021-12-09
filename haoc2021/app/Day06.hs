@@ -1,18 +1,16 @@
-import System.Environment
+-- Advent Of Code 2021 Day 6
+-- https://adventofcode.com/2021/day/6
+
+-- solution by Adam Jurczyk
+-- https://github.com/ajur/aoc
+
+import Tools
 
 main :: IO ()
 main = do
-    args <- getArgs
-    case args of
-        [file] -> do
-            contents <- readFile file
-            processInput contents
-        _ -> processInput "3,4,3,1,2"
+    inputData <- readInput "3,4,3,1,2"
 
-
-processInput :: String -> IO ()
-processInput contents = do
-    let xs = parseInput contents
+    let xs = parseInput inputData
     
     putStrLn "--- part 1"
     -- putStrLn . show . length . growFish 80 $ xs  -- watch out! unefficient!
@@ -58,5 +56,3 @@ fishes = (map f [0..] !!)
               where 
                   k = n `div` 7
                   nk kk = (n - 2 - 7 * kk) `max` 0
-
-(+1) . sum $ map (fishes . max 0 .(n - 2 - 7 * kk)) [1..(n `div` 7)]

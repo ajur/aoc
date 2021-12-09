@@ -1,21 +1,18 @@
-import System.Environment
-import Data.List
-import Data.List.Split
+-- Advent Of Code 2021 Day 8
+-- https://adventofcode.com/2021/day/8
+
+-- solution by Adam Jurczyk
+-- https://github.com/ajur/aoc
+
+import Tools
 import qualified Data.Map as Map
--- import qualified Data.IntMap.Strict as IntMap
+
 
 main :: IO ()
 main = do
-    args <- getArgs
-    case args of
-        [file] -> do
-            contents <- readFile file
-            processInput contents
-        _ -> processInput sampleData
+    inputData <- readInput sampleData
 
-processInput :: String -> IO ()
-processInput contents = do
-    let xs = parseInput contents
+    let xs = parseInput inputData
     
     putStrLn "--- input"
     putStr . unlines . map show . take 4 $ xs

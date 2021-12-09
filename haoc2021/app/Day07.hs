@@ -1,20 +1,16 @@
-import System.Environment
-import Data.List
-import Data.List.Split
+-- Advent Of Code 2021 Day 7
+-- https://adventofcode.com/2021/day/7
+
+-- solution by Adam Jurczyk
+-- https://github.com/ajur/aoc
+
+import Tools
 
 main :: IO ()
 main = do
-    args <- getArgs
-    case args of
-        [file] -> do
-            contents <- readFile file
-            processInput contents
-        _ -> processInput "16,1,2,0,4,2,7,1,2,14"
+    inputData <- readInput "16,1,2,0,4,2,7,1,2,14"
 
-
-processInput :: String -> IO ()
-processInput contents = do
-    let xs = parseInput contents
+    let xs = parseInput inputData
     
     putStrLn "--- part 1"
     putStrLn . show . minimum . map (flip posCost xs) . adjacent 5 . mean $ xs
