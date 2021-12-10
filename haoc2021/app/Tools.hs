@@ -1,10 +1,12 @@
 module Tools (
     module Data.List,
+    module Data.Char,
     module Data.List.Split,
     readInput
 ) where
 
 import System.Environment
+import Data.Char
 import Data.List
 import Data.List.Split
 

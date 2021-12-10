@@ -33,10 +33,10 @@ localMinBasin m p = growBasin [p] [] []
         growBasin [] basinPs _ = basinPs
         growBasin (p:ps) basinPs checkedPs
             | pv == 9   = growBasin ps basinPs (p:checkedPs)
-            | otherwise = growBasin withAdjecent (p:basinPs) (p:checkedPs)
+            | otherwise = growBasin toCheck (p:basinPs) (p:checkedPs)
             where 
                 pv = getDefault m 9 p
-                withAdjecent = (++ps) . (\\ps) . (\\checkedPs) . adjecentPositions $ p
+                toCheck = (++ps) . (\\ps) . (\\checkedPs) . adjecentPositions $ p
 
 localMinsVals :: (Ord a, Num a) => Matrix.Matrix a -> [a]
 localMinsVals m = map (m Matrix.!) . localMins $ m

@@ -12,17 +12,49 @@ main = do
     
     let input = parseInput inputData
     
-    putStr . unlines . map (\x -> (show x) ++ " ") $ take 10 input
-    putStrLn "..."
+    putStrLn "--- sample data"
+    putStrLn . show . parseInput $ sampleData
 
     putStrLn "--- part 1"
-    -- putStrLn . show . 
+    putStrLn . show $ (toBitsNum highBit input * toBitsNum lowBit input)
 
     putStrLn "--- part 2"
-    -- putStrLn . show . 
+    putStrLn . show $ ((bitsToInt . findLastStanding highBit $ input) * (bitsToInt . findLastStanding lowBit $ input))
 
-parseInput :: String -> [String]
-parseInput = lines
+
+findLastStanding :: Eq b => ([b] -> b) -> [[b]] -> [b]
+findLastStanding f rs = filterOnCol f 0 rs
+    where
+        filterOnCol f c (x:[]) = x
+        filterOnCol f c xs = filterOnCol f (succ c) $ filterByColBit f c xs
+
+filterByColBit :: Eq b => ([b] -> b) -> Int -> [[b]] -> [[b]]
+filterByColBit f c rs = filter (hasFBit c) rs
+    where
+        colFBit x = f . getCol x $ rs
+        hasFBit x row = (row !! x) == colFBit x
+
+toBitsNum :: ([b] -> Int) -> [[b]] -> Int
+toBitsNum f rs = bitsToInt . map fOnCol . take (length . head $ rs) $ [0..]
+    where fOnCol c = f . getCol c $ rs
+
+getCol :: Int -> [[b]] -> [b]
+getCol n = map (!!n)
+
+bitsToInt :: [Int] -> Int
+bitsToInt = foldl1 (\acc x -> acc * 2 + x)
+
+highBit :: (Integral c, Num a, Eq a) => [a] -> c
+highBit = floor . (\xs -> onesInList xs / genericLength xs + 0.5)
+
+lowBit :: (Integral c, Num a, Eq a) => [a] -> c
+lowBit = (1-) . highBit
+
+onesInList :: (Eq a, Num c, Num a) => [a] -> c
+onesInList = genericLength . filter (==1)
+
+parseInput :: String -> [[Int]]
+parseInput = map (map digitToInt) . lines
 
 sampleData :: String
 sampleData = "\
