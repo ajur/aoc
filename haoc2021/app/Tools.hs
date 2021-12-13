@@ -2,7 +2,7 @@ module Tools (
     module Data.List,
     module Data.Char,
     module Data.List.Split,
-    readInput
+    readInput, asPair, readInts, pairOfInts, linesOf
 ) where
 
 import System.Environment
@@ -19,3 +19,14 @@ readInput x = do
             return contents
         _ -> return x
 
+asPair :: [a] -> (a,a)
+asPair [x,y] = (x,y)
+
+readInts :: String -> [Int]
+readInts = map read . splitOneOf ";,| "
+
+pairOfInts :: String -> (Int, Int)
+pairOfInts = asPair . readInts
+
+linesOf :: (String -> a) -> String -> [a]
+linesOf f = map f . lines
