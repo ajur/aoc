@@ -1,5 +1,5 @@
--- Advent Of Code 2021 Day 3
--- https://adventofcode.com/2021/day/3
+-- Advent Of Code 2021 Day 12
+-- https://adventofcode.com/2021/day/12
 
 -- solution by Adam Jurczyk
 -- https://github.com/ajur/aoc

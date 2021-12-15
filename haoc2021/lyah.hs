@@ -1,6 +1,8 @@
 -- Just some random collection of reimplementations and other functions
 -- that I've wrote while reading http://learnyouahaskell.com/
 
+import qualified Data.Map as Map
+
 itsMe = "It's a-me, Adam Jurczyk!"
 
 doubleMe x = x + x
@@ -165,4 +167,138 @@ data Car = Car { company :: String
                , model :: String
                , year :: Int
                } deriving (Show)
+
+
+data Either'' a b = Left'' a | Right'' b deriving (Eq, Ord, Read, Show)   -- types can be parametrized (ala c++ templates)
+
+
+data LockerState = Taken | Free deriving (Show, Eq)           -- data type (no args, so kinda like Enums in other langs, or more like symbols in es6?)
+type Code = String                                            -- type synonims
+type LockerMap = Map.Map Int (LockerState, Code)
+
+lockerLookup :: Int -> LockerMap -> Either String Code  
+lockerLookup lockerNumber map =   
+    case Map.lookup lockerNumber map of   
+        Nothing -> Left $ "Locker number " ++ show lockerNumber ++ " doesn't exist!"  
+        Just (state, code) -> if state /= Taken   
+                                then Right code  
+                                else Left $ "Locker " ++ show lockerNumber ++ " is already taken!" 
+
+lockers :: LockerMap  
+lockers = Map.fromList   
+    [(100,(Taken,"ZD39I"))  
+    ,(101,(Free,"JAH3I"))  
+    ,(103,(Free,"IQSA9"))  
+    ,(105,(Free,"QOTSA"))  
+    ,(109,(Taken,"893JJ"))  
+    ,(110,(Taken,"99292"))  
+    ]  
+
+-- lockerLookup 101 lockers
+-- lockerLookup 100 lockers
+-- lockerLookup 102 lockers
+
+
+-- recursive data types
+data BasicList a = BasicEmpty | Cons a (BasicList a) deriving (Show, Read, Eq, Ord)    -- basically a list - its Empty, or Cons-tructor taking head (a) and tail (BasicList a)
+
+-- 4 `Cons` (5 `Cons` BasicEmpty)  <=> 4:5:[] <=> [4,5]
+
+infixr 5 :-:                                                                   -- fixity declaration, for operators basically
+data List a = Empty | a :-: (List a) deriving (Show, Read, Eq, Ord)            -- same thing, but with automatically infix constructor (only special chars)
+
+-- 4:-:5:-:Empty
+
+-- binary search tree
+data BST a = EmptyBST | BSTNode (BST a) a (BST a) deriving (Read)
+
+bstSingle :: a -> BST a
+bstSingle x = BSTNode EmptyBST x EmptyBST
+
+bstInsert :: Ord a => BST a -> a -> BST a
+bstInsert EmptyBST x = bstSingle x
+bstInsert n@(BSTNode l y p) x
+    | x > y = BSTNode l y (bstInsert p x)
+    | x < y = BSTNode (bstInsert l x) y p
+    | otherwise = n
+
+bstElem :: Ord a => BST a -> a -> Bool
+bstElem EmptyBST _ = False
+bstElem (BSTNode l y p) x
+    | x == y = True
+    | x > y = bstElem p x
+    | x < y = bstElem l x
+
+bstFromList :: (Foldable t, Ord a) => t a -> BST a
+bstFromList = foldl bstInsert EmptyBST
+
+
+-- typeclasses (e.g. Eq) - are kinda like interfaces.. kinda
+
+{-
+class Eq a where  
+    (==) :: a -> a -> Bool  
+    (/=) :: a -> a -> Bool  
+    x == y = not (x /= y)  
+    x /= y = not (x == y)  
+-}
+
+data TrafficLight = Red | Yellow | Green      -- custom type
+
+instance Eq TrafficLight where               -- instance class - aka, implement interface ?
+    Red == Red = True  
+    Green == Green = True  
+    Yellow == Yellow = True  
+    _ == _ = False
+
+instance Show TrafficLight where  
+    show Red = "Red light"  
+    show Yellow = "Yellow light"  
+    show Green = "Green light"
+
+
+-- so going back to our bst, taking adventage of generics typeclasses.. or whatever its called
+instance (Eq a) => Eq (BST a) where
+    EmptyBST == EmptyBST = True
+    BSTNode l x p == BSTNode l2 x2 p2 = x == x2 && l == l2 && p == p
+
+instance (Show a) => Show (BST a) where
+    show EmptyBST = "."
+    show (BSTNode l x p) = "{" ++ show l ++ show x ++ show p ++ "}"
+
+
+-- custom typeclass - based on JS true-ishness ;P
+class YesNo a where  
+    yesno :: a -> Bool
+
+instance YesNo Int where
+    yesno 0 = False
+    yesno _ = True
+
+instance YesNo [a] where  
+    yesno [] = False  
+    yesno _  = True  
+
+instance YesNo Bool where  
+    yesno = id
+
+instance YesNo (Maybe a) where  
+    yesno (Just _) = True  
+    yesno Nothing  = False
+
+instance YesNo (BST a) where  
+    yesno EmptyBST = False  
+    yesno _        = True
+
+yesnoIf :: YesNo y => y -> a -> a -> a
+yesnoIf p x y = if yesno p then x else y
+
+-- functor is 'just' a typeclass
+{-
+class Functor f where  
+    fmap :: (a -> b) -> f a -> f b  
+-}
+instance Functor BST where
+    fmap f EmptyBST = EmptyBST
+    fmap f (BSTNode l x r) = BSTNode (fmap f l) (f x) (fmap f r)
 

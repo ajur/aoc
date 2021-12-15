@@ -1,4 +1,6 @@
 module Tools (
+    module Data.Function,
+    module Data.Maybe,
     module Data.List,
     module Data.Char,
     module Data.List.Split,
@@ -6,9 +8,11 @@ module Tools (
 ) where
 
 import System.Environment
+import Data.Maybe
 import Data.Char
 import Data.List
 import Data.List.Split
+import Data.Function
 
 readInput :: String -> IO String
 readInput x = do

@@ -90,3 +90,7 @@ executable day13
 executable day14
     import:           deps
     main-is:          Day14.hs
+
+executable day15
+    import:           deps
+    main-is:          Day15.hs
