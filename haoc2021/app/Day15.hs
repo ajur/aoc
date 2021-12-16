@@ -26,13 +26,9 @@ main = do
     let blownInputMx = blowInputMx 5 inputMx
     putStrLn . show $ dijkstraFind blownInputMx (1,1) (getEnd blownInputMx)
 
-sample = parseInput sampleData
-
-sampleMin = parseInput "116\n138\n213"
-
 
 -- dijkstra
-
+-- probably could be faster, with faster data or something
 
 dijkstraFind :: Mx.Matrix Int -> (Int, Int) -> (Int, Int) ->Int
 dijkstraFind mx start end = snd $ go M.empty [(start, 0)]
@@ -68,11 +64,7 @@ pqInsertAll = foldr pqInsert
 
 
 blowInputMx :: Int -> Mx.Matrix Int -> Mx.Matrix Int
-blowInputMx n inMx = Mx.flatten . Mx.mapPos (mxMapper inMx) $ upsMx n
-    where
-        valueMapper n _ = vUp9By n
-        mxMapper mx _ v = Mx.mapPos (valueMapper v) mx
-        
+blowInputMx n inMx = Mx.flatten . fmap (\v -> fmap (vUp9By v) inMx) $ upsMx n
 
 upsMx :: Int -> Mx.Matrix Int
 upsMx n = Mx.matrix n n $ \(i,j) -> i + j - 2
