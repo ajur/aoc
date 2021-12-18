@@ -99,3 +99,7 @@ executable day15
 executable day16
     import:           deps
     main-is:          Day16.hs
+
+executable day17
+    import:           deps
+    main-is:          Day17.hs
