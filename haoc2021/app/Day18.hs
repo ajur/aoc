@@ -16,10 +16,10 @@ main = do
     let input = parseInput inputData
     
     putStrLn "--- part 1"
-    putStrLn . show . magnitude . sumTrees $ input
+    print . magnitude . sumTrees $ input
 
     putStrLn "--- part 2"
-    putStrLn . show . sol2 $ input
+    print $ sol2 input
 
 sol2 :: [Tree] -> Int
 sol2 ts = maximum . map magnitude . concat $ [[t1 <+> t1, t2 <+> t1] | t1 <- ts, t2 <- ts]
@@ -128,9 +128,3 @@ sampleData = "\
 \[[9,3],[[9,9],[6,[4,9]]]]\n\
 \[[2,[[7,7],7]],[[5,8],[[9,3],[0,2]]]]\n\
 \[[[[5,2],5],[8,[3,7]]],[[5,[7,5]],[4,4]]]"
-
-sd = parseInput sampleData
-
-sl1 = "[1,1]\n[2,2]\n[3,3]\n[4,4]"
-sl2 = "[1,1]\n[2,2]\n[3,3]\n[4,4]\n[5,5]"
-sl3 = "[1,1]\n[2,2]\n[3,3]\n[4,4]\n[5,5]\n[6,6]"

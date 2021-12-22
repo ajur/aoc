@@ -2,6 +2,8 @@
 -- that I've wrote while reading http://learnyouahaskell.com/
 
 import qualified Data.Map as Map
+import Data.List
+import System.Random
 
 itsMe = "It's a-me, Adam Jurczyk!"
 
@@ -301,4 +303,27 @@ class Functor f where
 instance Functor BST where
     fmap f EmptyBST = EmptyBST
     fmap f (BSTNode l x r) = BSTNode (fmap f l) (f x) (fmap f r)
+
+--- typefu
+-- :k Tofu :: * -> (* -> *) -> *
+class Tofu t where  
+    tofu :: j a -> t a j
+
+-- :k Frank :: * -> (* -> *) -> *
+data Frank a b  = Frank {frankField :: b a} deriving (Show)
+-- :t Frank {frankField = Just "HAHA"}   :: Frank [Char] Maybe
+-- :t Frank {frankField = "YES"}         :: Frank Char []
+
+instance Tofu Frank where  
+    tofu x = Frank x
+
+
+-- random
+
+rand1 = random (mkStdGen 100) :: (Int, StdGen)
+rand2 = random (mkStdGen 100) :: (Int, StdGen)
+-- rand == rand2
+
+randomCoinz :: StdGen -> [Bool]
+randomCoinz = unfoldr (Just . random)
 

@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 -- Advent Of Code 2021 Day 16
 -- https://adventofcode.com/2021/day/16
 
@@ -147,12 +148,6 @@ manyTillIncluding p end = scan
 
 readBits :: Int -> ReadP Int
 readBits n = fmap bs2i $ count n get
-
-b2i :: [Int] -> Int
-b2i = foldl1 (\acc x -> acc * 2 + x)
-
-bs2i :: String -> Int
-bs2i = b2i . map digitToInt
 
 -- it was already there so...
 x2b :: Char -> String
