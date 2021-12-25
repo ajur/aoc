@@ -121,3 +121,20 @@ executable day21
     import:           deps
     main-is:          Day21.hs
     build-depends:    monad-memo
+
+executable day22
+    import:           deps
+    main-is:          Day22.hs
+
+executable day23
+    import:           deps
+    main-is:          Day23.hs
+
+executable day24
+    import:           deps
+    main-is:          Day24.hs
+
+executable day25
+    import:           deps
+    main-is:          Day25.hs
+
