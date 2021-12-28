@@ -12,14 +12,16 @@ main :: IO ()
 main = do
     inputData <- readInput sampleData
 
-    let actions = parseInput inputData
+    --let actions = parseInput inputData
 
     putStrLn "--- part 1"
     -- print $ sol1 actions
     print $ sum [5,20,7,700,500,50,2000,70,3000,9000,3,3]  -- pen & pencil computing xD
 
     putStrLn "--- part 2"
-    print $ sol2 actions
+    --print $ sol2 actions
+
+
 
 {-
 
