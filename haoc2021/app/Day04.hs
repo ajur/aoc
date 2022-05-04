@@ -10,7 +10,7 @@ main :: IO ()
 main = do
     inputData <- readInput sampleData
     
-    let (draws = parseInput inputData
+    let draws = parseInput inputData
     
     putStr . unlines . map (\x -> (show x) ++ " ") $ take 10 input
     putStrLn "..."
@@ -28,7 +28,7 @@ parseInput = (readDraws x, readBoards xs)
         readDraws = map read . splitOn ","
         readBoards = map (map (map readInt . words) . lines)
 
-        
+-- TODO
 
 sampleData :: String
 sampleData = "\

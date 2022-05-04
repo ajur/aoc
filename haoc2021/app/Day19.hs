@@ -21,7 +21,7 @@ main = do
     -- print $ input
 
 
-
+-- TODO
 
 manhattanDistance :: Num a => (a, a, a) -> (a, a, a) -> a
 manhattanDistance (x1,y1,z1) (x2,y2,z2) = ds x1 x2 + ds y1 y2 + ds z1 z2
