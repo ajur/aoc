@@ -1,0 +1,28 @@
+{
+  "name": "aoc2023",
+  "version": "1.0.0",
+  "description": "Advent of Code 2023",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "day": "node .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ajur/aoc.git#main"
+  },
+  "keywords": [
+    "adventofcode",
+    "aoc"
+  ],
+  "author": "Adam Jurczyk",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ajur/aoc/issues"
+  },
+  "homepage": "https://github.com/ajur/aoc/tree/main#readme",
+  "dependencies": {
+    "array2d": "^0.0.5"
+  }
+}
