@@ -8,8 +8,32 @@ export const sample = `
 `
 
 export const runA = (data) => parse(data)
-  .map(nums => nums.peek())
-  .apply(() => 0)
+  .map(a => {
+    const aa = [a];
+    while (aa.at(-1).some(n => n !== 0)) {
+      aa.push(diffs(aa.at(-1)));
+    }
+    return aa.reduceRight((acc, cur) => cur.at(-1) + acc, 0);
+  })
+  .sum()
+
+export const runB = (data) => parse(data)
+  .map(a => {
+    const aa = [a];
+    while (aa.at(-1).some(n => n !== 0)) {
+      aa.push(diffs(aa.at(-1)));
+    }
+    return aa.reduceRight((acc, cur) => cur.at(0) - acc, 0);
+  })
+  .sum()
+
+const diffs = a => {
+  const out = [];
+  for (let i = 1; i < a.length; ++i) {
+    out.push(a[i] - a[i - 1]);
+  }
+  return out;
+}
 
 const parse = (str) => str.split('\n')
   .map(r => r.split(' ').map(S.asInt))
