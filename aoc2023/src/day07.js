@@ -13,7 +13,6 @@ const cards = "23456789TJQKA";
 const cardsJ = "J23456789TQKA";
 
 export const runA = (data) => parse(data)
-  // .peek()
   .map(({hand, bid}) => ({hand, bid, strength: handStrenth(typeStrength, card => cards.indexOf(card), hand)}))
   .sort(F.asc(F.key('strength')))
   .map(F.key('bid'))
@@ -21,9 +20,7 @@ export const runA = (data) => parse(data)
   .sum();
 
 export const runB = (data) => parse(data)
-  // .peek()
   .map(({hand, bid}) => ({hand, bid, strength: handStrenth(typeStrengthJ, card => cardsJ.indexOf(card), hand)}))
-  // .peek()
   .sort(F.asc(F.key('strength')))
   .map(F.key('bid'))
   .map((v, i) => v * (i + 1))

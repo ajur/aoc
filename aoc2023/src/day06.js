@@ -7,19 +7,13 @@ Distance:  9  40  200
 `
 
 export const runA = (data) => parse(data)
-  // .peek()
   .map(calcRange)
-  // .peek()
   .map(intsInRange)
-  // .peek()
   .reduce((agg, n) => agg * n);
 
 export const runB = (data) => parseB(data)
-  // .peek()
   .map(calcRange)
-  // .peek()
   .map(intsInRange)
-  // .peek()
   .reduce((agg, n) => agg * n)
 
 const intsInRange = ([a, b]) => Math.ceil(b - 1) - Math.floor(a + 1) + 1

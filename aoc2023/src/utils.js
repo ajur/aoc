@@ -2,6 +2,15 @@
 Object.prototype.apply = function(f) {
   return f(this);
 }
+Object.prototype.peek = function (f) {
+  f(this);
+  return this;
+}
+Object.prototype.log = function (msg) {
+  if (msg) console.log(msg, this)
+  else console.log(this);
+  return this;
+}
 
 Object.filter = (obj, predicate) => Object.fromEntries(Object.entries(obj).filter(predicate));
 
@@ -43,10 +52,6 @@ Array.prototype.sortAsc = function () {
 }
 Array.prototype.sortDesc = function () {
   return this.sort((a, b) => b - a);
-}
-Array.prototype.peek = function (msg = '') {
-  console.log(msg, this);
-  return this;
 }
 
 String.prototype.toInt = function() {
