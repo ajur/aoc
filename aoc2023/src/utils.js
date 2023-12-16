@@ -77,5 +77,45 @@ export const strings = {
 
 export const maths = {
   gcd: (a, b) => (b == 0) ? a : maths.gcd(b, a % b),
-  lcm: (...n) => n.reduce((a,b) => a / maths.gcd(a, b) * b)
+  lcm: (...n) => n.reduce((a,b) => a / maths.gcd(a, b) * b),
+  inRange: (a, b) => v => Math.min(a, b) <= v && v < Math.max(a, b)
+}
+
+export const arrays = {
+  pairs: a => {
+    const ps = [];
+    for (let i = 0; i < a.length; ++i) {
+      for (let j = i + 1; j < a.length; ++j) {
+        ps.push([a[i], a[j]]);
+      }
+    }
+    return ps;
+  }
+}
+
+export const grid = {
+  at: (g, r, c) => g?.[r]?.[c],
+  set: (g, r, c, v) => {
+    g[r][c] = v
+  },
+  find: (g, p) => {
+    for(let r = 0; r < g.length; ++r) {
+      for(let c = 0; c < g[r].length; ++r) {
+        if (p(g[r][c], r, c, g)) {
+          return [r, c];
+        }
+      }
+    }
+  },
+  findAll: (g, p) => {
+    const found = [];
+    for(let r = 0; r < g.length; ++r) {
+      for(let c = 0; c < g[r].length; ++c) {
+        if (p(g[r][c], r, c, g)) {
+          found.push([r, c]);
+        }
+      }
+    }
+    return found;
+  }
 }
