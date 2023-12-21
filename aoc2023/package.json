@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/ajur/aoc/tree/main#readme",
   "dependencies": {
-    "array2d": "^0.0.5"
+    "array2d": "^0.0.5",
+    "bmp-js": "^0.1.0"
   }
 }

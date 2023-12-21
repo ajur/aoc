@@ -1,5 +1,5 @@
 
-import './utils.js'
+import {strings as S} from './utils.js'
 
 export const sampleA = `
 1abc2
@@ -20,13 +20,13 @@ zoneight234
 
 export const runA = (data) => parse(data).map((str) => {
   const nums = str.match(/\d/g);
-  return (nums.at(0) + nums.at(-1)).toInt()
+  return S.asInt(nums.at(0) + nums.at(-1));
 }).sum();
 
 export const runB = (data) => parse(data).map((str) => {
   const num1 = asDigit(str.match(/(\d|one|two|three|four|five|six|seven|eight|nine)/)[1]);
   const num2 = asDigit(str.match(/.*(\d|one|two|three|four|five|six|seven|eight|nine)/)[1]);
-  return (num1 + num2).toInt()
+  return S.asInt(num1 + num2);
 }).sum();
 
 const parse = (str) => str.split('\n');

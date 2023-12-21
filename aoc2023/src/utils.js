@@ -7,8 +7,13 @@ Object.prototype.peek = function (f) {
   return this;
 }
 Object.prototype.log = function (msg) {
-  if (msg) console.log(msg, this)
+  if (typeof msg === 'string') console.log(msg, this);
   else console.log(this);
+  return this;
+}
+Object.prototype.logj = function (msg, n = 2) {
+  if (typeof msg === 'string') console.log(msg, JSON.stringify(this, null, n));
+  else console.log(JSON.stringify(this, null, n));
   return this;
 }
 
@@ -53,9 +58,27 @@ Array.prototype.sortAsc = function () {
 Array.prototype.sortDesc = function () {
   return this.sort((a, b) => b - a);
 }
+Array.prototype.zip = function (...ars) {
+  const arrs = [this, ...ars];
+  const out = new Array(this.length);
+  for (let i = 0; i < out.length; ++i) {
+    out[i] = arrs.map(functions.nth(i));
+  }
+  return out;
+}
+Array.prototype.count = function (p) {
+  return this.reduce((s, v) => p(v) ? s + 1 : s, 0);
+}
 
-String.prototype.toInt = function() {
-  return parseInt(this, 10);
+const builtin_trim = String.prototype.trim;
+String.prototype.trim = function(c) {
+  if (!c) return builtin_trim.call(this);
+  let a = 0;
+  let b = this.length;
+  const n = c.length;
+  while (this.startsWith(c, a)) a += n;
+  while (this.endsWith(c, b)) b -= n;
+  return this.substring(a, b);
 }
 
 export const functions = {
@@ -68,20 +91,39 @@ export const functions = {
   nth: n => arr => arr[n],
   key: k => o => o[k],
   asc: (m = functions.id) => (a, b) => m(a) - m(b),
-  desc: (m = functions.id) => (a, b) => m(b) - m(a)
+  desc: (m = functions.id) => (a, b) => m(b) - m(a),
+  is: a => b => a === b
 }
 
 export const strings = {
-  asInt: (s) => parseInt(s, 10)
+  asInt: (s) => parseInt(s, 10),
+  split: by => s => s.split(by),
+  join: by => as => as.join(by)
 }
 
 export const maths = {
   gcd: (a, b) => (b == 0) ? a : maths.gcd(b, a % b),
   lcm: (...n) => n.reduce((a,b) => a / maths.gcd(a, b) * b),
-  inRange: (a, b) => v => Math.min(a, b) <= v && v < Math.max(a, b)
+  inRange: (a, b) => v => Math.min(a, b) <= v && v < Math.max(a, b),
+  shoelace: (points) => Math.abs(0.5 * points.reduce((sum, [x1, y1], i) => {
+    const [x2, y2] = points[(i + 1) % points.length];
+    return sum + x1 * y2 - x2 * y1
+  }, 0)),
+  manhatan: ([x1, y1], [x2, y2]) => Math.abs(x2 - x1) + Math.abs(y2 - y1),
+  dist: ([x1, y1], [x2, y2]) => Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2),
+  circumference: (points) => points.reduce((sum, p1, i) => sum + maths.dist(p1, points[(i + 1) % points.length]), 0),
+  area: (points, withPath = true) => maths.shoelace(points) + 1 + (withPath ? 0.5 : -0.5) * maths.circumference(points),
 }
 
 export const arrays = {
+  repeat: (n, v) => Array.from({length: n}, () => v),
+  range: (a, b = 0) => {
+    const aa = Math.min(a,b);
+    const bb=Math.max(a,b)
+    const n = bb-aa;
+    return Array.from({length: n}, (_, i) => aa + i)
+  },
+  from: (n, f) => Array.from({length: n}, (_, i) => f(i)),
   pairs: a => {
     const ps = [];
     for (let i = 0; i < a.length; ++i) {
@@ -94,9 +136,20 @@ export const arrays = {
 }
 
 export const grid = {
+  copy: (g) => g.map(r => [...r]),
   at: (g, r, c) => g?.[r]?.[c],
   set: (g, r, c, v) => {
     g[r][c] = v
+  },
+  eq: (key = functions.id) => (g1, g2) => {
+    if (g1.length !== g2.length) return false;
+    for (let row = 0; row < g1.length; ++row) {
+      if (g1[row].length !== g2[row].length) return false;
+      for (let col = 0; col < g1[row].length; ++col) {
+        if (key(g1[row][col]) !== key(g2[row][col])) return false;
+      }
+    }
+    return true;
   },
   find: (g, p) => {
     for(let r = 0; r < g.length; ++r) {
@@ -117,5 +170,19 @@ export const grid = {
       }
     }
     return found;
-  }
+  },
+  transpose: (g) => {
+    const rows = g.length;
+    const cols = g[0].length;
+    const out = new Array(cols);
+    for (let col = 0; col < cols; ++col) {
+      out[col] = new Array(rows);
+      for (let row = 0; row < rows; ++row) {
+        out[col][row] = g[row][col];
+      }
+    }
+    return out;
+  },
+  neighbours: (row, col) => [[row - 1, col], [row, col - 1], [row + 1, col], [row, col + 1]],
+  pprint: (p = v => '' + v) => (g) => g.map(r => r.map(p).join('')).join('\n')
 }

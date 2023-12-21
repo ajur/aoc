@@ -1,5 +1,5 @@
 
-import './utils.js'
+import {strings as S} from './utils.js'
 
 export const sample = `
 Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
@@ -33,7 +33,7 @@ function maxCubes(draws) {
 
 function parseGame(str) {
   const [gameStr, drawsStr] = str.split(": ");
-  const id = gameStr.split(' ')[1].toInt();
+  const id = S.asInt(gameStr.split(' ')[1]);
   const draws = drawsStr.split('; ').map(draw => 
     draw.split(', ').map(colorDraw => {
       const [cubesCount, cubesColor] = colorDraw.split(' ');
