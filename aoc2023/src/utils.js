@@ -1,4 +1,6 @@
 
+import {Array2D} from 'array2d';
+
 Object.prototype.apply = function(f) {
   return f(this);
 }
@@ -136,6 +138,10 @@ export const arrays = {
 }
 
 export const grid = {
+  create: Array2D.build,
+  map: Array2D.map,
+  forEach: Array2D.eachCell,
+  forArea: Array2D.forArea,
   copy: (g) => g.map(r => [...r]),
   at: (g, r, c) => g?.[r]?.[c],
   set: (g, r, c, v) => {
@@ -153,7 +159,7 @@ export const grid = {
   },
   find: (g, p) => {
     for(let r = 0; r < g.length; ++r) {
-      for(let c = 0; c < g[r].length; ++r) {
+      for(let c = 0; c < g[r].length; ++c) {
         if (p(g[r][c], r, c, g)) {
           return [r, c];
         }
@@ -184,5 +190,7 @@ export const grid = {
     return out;
   },
   neighbours: (row, col) => [[row - 1, col], [row, col - 1], [row + 1, col], [row, col + 1]],
-  pprint: (p = v => '' + v) => (g) => g.map(r => r.map(p).join('')).join('\n')
+  pprint: (p = v => '' + v) => (g) => g.map(r => r.map(p).join('')).join('\n'),
+  count: (g, p) => g.map(r => r.count(p)).sum(),
+  flatMap: (g, f) => g.flatMap((r, ri) => r.map((v, ci) => f(v, ri, ci)).reduce((a, b) => a.map((ar,i) => [...ar, ...b[i]])))
 }

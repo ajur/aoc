@@ -76,7 +76,7 @@ const pathToImage = (steps) => {
   const grid = A2D.build(width, height, '#000000');
   points.forEach(([r, c, clr]) => grid[r - rMin + 1][c - cMin + 1] = clr);
 
-  saveGridAsImage(grid, 'img/day18out', hexToARGB);
+  saveGridAsImage(grid, 'day18out', hexToARGB);
 }
 
 const hexToARGB = hex => [

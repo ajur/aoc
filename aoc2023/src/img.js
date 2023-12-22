@@ -23,5 +23,5 @@ export const saveGridAsImage = (grid, fileName, mapper) => {
   }
 
   const raw = encode({width, height, data});
-  writeFileSync(`./${fileName}.bmp`, raw.data);
+  writeFileSync(`./viz/${fileName}.bmp`, raw.data);
 }
