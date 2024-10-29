@@ -24,6 +24,7 @@
   "homepage": "https://github.com/ajur/aoc/tree/main#readme",
   "dependencies": {
     "array2d": "^0.0.5",
-    "bmp-js": "^0.1.0"
+    "bmp-js": "^0.1.0",
+    "fastpriorityqueue": "^0.7.4"
   }
 }

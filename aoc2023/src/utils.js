@@ -134,7 +134,8 @@ export const arrays = {
       }
     }
     return ps;
-  }
+  },
+  eq: (f = functions.id) => (a, b) => a.length === b.length && a.every((v, i) => f(v) === f(b[i]))
 }
 
 export const grid = {
