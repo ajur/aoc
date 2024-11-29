@@ -1,7 +1,13 @@
+import { notNull } from "./misc.ts";
+
+export type ArrayMapper<T, V> = (value: T, index: number, arr: T[]) => V;
+export type ArrayPredicate<T> = ArrayMapper<T, boolean>;
+
 declare global {
   interface Array<T> {
     inGroupOf(n: number): T[][];
     sum(): number;
+    count(p?: ArrayPredicate<T>): number;
     combinations(k: number): T[][];
   }
 }
@@ -13,12 +19,23 @@ Array.prototype.inGroupOf = function<T>(n: number): T[][] {
   }
   return out;
 };
+
 Array.prototype.sum = function(): number {
   let sum = 0;
   for (let i = 0; i < this.length; i++) {
       sum += +this[i];
   }
   return sum;
+}
+
+Array.prototype.count = function<T>(this: T[], p: ArrayPredicate<T> = notNull): number {
+  let num = 0;
+  for (let i = 0; i < this.length; ++i) {
+      if (p(this[i], i, this)) {
+        ++num;
+      }
+  }
+  return num;
 }
 
 Array.prototype.combinations = function<T>(this: T[], k: number) {

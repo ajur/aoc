@@ -49,7 +49,7 @@ parse(sample).map(supportsTLS)
 
 // %%
 
-const solveA = (s: string): number => parse(s).map(supportsTLS).map(b => b ? 1 : 0).sum();
+const solveA = (s: string): number => parse(s).count(supportsTLS);
 assertEquals(solveA(sample), 2)
 // %%
 
@@ -85,7 +85,7 @@ const supportsSSL = (d: IPv7): boolean => {
   return false;
 }
 
-const solveB = (s: string) => parse(s).map(supportsSSL).map(b => b ? 1 : 0).sum();
+const solveB = (s: string) => parse(s).count(supportsSSL);
 
 assertEquals(3, solveB(`
 aba[bab]xyz

@@ -1,56 +1,8 @@
 // %%
 
 import { BinaryHeap } from "@std/data-structures";
-import { aStar } from "./astar.ts";
-import { fst, manhattan, neighbours, timeout, ulog, Vec, Vector, VecTuple, vx, vy } from "./lib.ts";
+import { Grid, VecTuple, Vector, aStar, fst, manhattan, timeout, ulog } from "./lib/index.ts";
 
-// %%
-
-class SparseGrid<T> {
-  data: T[][];
-  width = 0;
-  height = 0;
-
-  constructor() {
-    this.data = [];
-  }
-
-  at(v: Vec): T | undefined {
-    const x = vx(v);
-    const y = vy(v);
-
-    return this.data[y]?.[x];
-  }
-
-  set(v: Vec, val: T) {
-    const x = vx(v);
-    const y = vy(v);
-
-    this.data[y] ??= [];
-    this.data[y][x] = val;
-
-    if (x >= this.width) this.width = x + 1;
-    if (y >= this.height) this.height = y + 1;
-  }
-
-  neighbours(v: Vec): [Vector, T | undefined][] {
-    return neighbours(v)
-      .filter((nv) => nv.x >= 0 && nv.y >= 0)
-      .map((nv) => [nv, this.at(nv)]);
-  }
-}
-
-const printGrid = <T>(g: SparseGrid<T>, m: (vt: VecTuple, v: T | undefined) => string) => {
-  const out: string[] = [];
-  for (let y = 0; y < g.height; ++y) {
-    for (let x = 0; x < g.width; ++x) {
-      const v = g.at([x, y]);
-      out.push(m([x, y], v));
-    }
-    out.push('\n');
-  }
-  return out.join('');
-}
 
 // %%
 
@@ -64,7 +16,7 @@ const isWall = ([x, y]: VecTuple, fav: number): number => {
   return count % 2;
 }
 
-let g = new SparseGrid<number>();
+const g = new Grid<number>();
 for (let y = 0; y < 7; ++y) {
   for (let x = 0; x < 10; ++x) {
     const v = [x, y] as VecTuple;
@@ -72,17 +24,17 @@ for (let y = 0; y < 7; ++y) {
   }
 }
 
-console.log(printGrid(g, (_, v) => v ? '#' : '.'))
+console.log(g.pprint((v) => v ? '#' : '.'))
 // %%
 
 const solveA = async (fav: number, start: VecTuple, end: VecTuple) => {
-  const grid = new SparseGrid<number>();
+  const grid = new Grid<number>();
   const tileType = (v: VecTuple) => isWall(v, fav) ? 0 : 1;
   grid.set(start, 3);
   grid.set(end, 4);
 
   const gv2s = ['#', '.', 'O', 'S', 'T'];
-  const pg = () => printGrid(grid, (_, v) => v === undefined ? ' ' : gv2s[v]);
+  const pg = () => grid.pprint((v) => v === undefined ? ' ' : gv2s[v]);
 
   const drawer = await ulog(`solAout${fav}${start}${end}`, pg())
 
@@ -120,12 +72,12 @@ console.log("Sol A: ", await solveA(1358, [1, 1], [31,39]));
 // %%
 
 const solveB = async (fav: number, start: VecTuple, maxDist: number) => {
-  const grid = new SparseGrid<number>();
+  const grid = new Grid<number>();
   const tileType = (v: VecTuple) => isWall(v, fav) ? 0 : 1;
   grid.set(start, tileType(start));
 
   const gv2s = ['#', '.'];
-  const pg = () => printGrid(grid, (_, v) => v === undefined ? ' ' : gv2s[v]);
+  const pg = () => grid.pprint((v) => v === undefined ? ' ' : gv2s[v]);
   const drawer = await ulog(`solAout${fav}${start}${maxDist}`, pg())
 
   const nbs = (v: Vector) => {

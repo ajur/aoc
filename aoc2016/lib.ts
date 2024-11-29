@@ -1,65 +1,4 @@
 
-export const peek = <T>(fn: (a: T) => unknown) => (a: T): T => {
-  fn(a);
-  return a;
-};
-export const log = <T>(a: T): T => {
-  console.log(a);
-  return a;
-}
-export const logJson = <T>(a: T): T => {
-  console.log(JSON.stringify(a, null, 2));
-  return a;
-}
-
-export const key = <K extends keyof any>(k: K) => <O extends Record<K, any>>(o: O): O[K] => o[k];
-
-type ReduceCallback<T, V> = (previousValue: V, currentValue: T, currentIndex: number, array: T[]) => V;
-export const reduce = <T, V>(fn: ReduceCallback<T, V>, init: V) => (a: T[]) => a.reduce(fn, init);
-export const sort = <T>(p: (a: T, b: T) => number) => (a: T[]): T[] => a.sort(p);
-export const toSorted = <T>(p: (a: T, b: T) => number) => (a: T[]): T[] => a.slice().sort(p);
-
-export const id = <T>(o: T): T => o;
-
-export const pipe = (...fns: Array<(x: any) => any>) => (x: any) => fns.reduce((v, f) => f(v), x); // typing this is hard -_-
-export const compose = (...fns: Array<(x: any) => any>) => (x: any) => fns.reduceRight((v, f) => f(v), x);
-export const mapped = <T, U, R>(m: (t: T) => U, f: (...args: U[]) => R) => (...args: T[]) => f(...(args.map(m)))
-
-export const fst = <T>(arr: T[] | [T]): T | undefined => arr[0];
-export const snd = <T>(arr: T[] | [unknown, T]): T | undefined => arr[1];
-export const last = <T>(arr: T[]): T | undefined => arr.at(-1);
-export const take = (n: number) => <T>(arr: T[]): T[] => arr.slice(0, n);
-
-export const sum = (a: number[]): number => {
-  let sum = 0;
-  for (let i = 0; i < a.length; i++) {
-      sum += a[i];
-  }
-  return sum;
-}
-export const flat = <T>(g: T[][]): T[] => g.flat();
-
-export const inGroupOf = (n: number) => <T>(a: T[]) => {
-  const out: T[][] = [];
-  for (let i = 0; i < a.length; i += n) {
-      out.push(a.slice(i, i + n));
-  }
-  return out;
-};
-export function combinations<T>(k: number, a: T[]): T[][];
-export function combinations<T>(k: number): (a: T[]) => T[][];
-export function combinations<T>(k: number, a?: T[]) {
-  if (!a) return (a: T[]) => combinations(k, a);
-  if (k < 0 || k > a.length) throw new Error("k should be in range <0, N> k=" + k + ' a=' + a);
-  if (k === 0 || a.length === 0) return [];
-  if (k === a.length || a.length === 1) return [a];
-  if (k === 1) return a.map(v => [v]);
-  const [head, ...tail] = a;
-  return [
-    ...combinations(k - 1, tail).map((aa: T[]) => [head, ...aa]),
-    ...combinations(k, tail)
-  ];
-}
 
 export type ValueToNumberMapper<T> = (a: T) => number;
 export type Comparator<T> = (a: T, b: T) => number;
@@ -77,22 +16,6 @@ export const not = (f: FnAnyToBoolean) => (...args: Parameters<FnAnyToBoolean>) 
 export const and = (...ff: FnAnyToBoolean[]) => (...args: Parameters<FnAnyToBoolean>) =>
   ff.reduce((v: boolean, f: FnAnyToBoolean) => v && f(...args), true);
 
-export const notNull = (a: any) => a != null;
-
-export const asInt = (s: string) => parseInt(s, 10);
-export const split = (sep: string | RegExp | undefined, limit?: number) => (s: string) => s.split(sep ?? '', limit);
-
-export const join = <T>(sep = '') => (ar: Array<T>) => ar.join(sep);
-
-export const trim = (c?: string) => (s: string) => {
-  if (c === undefined) return s.trim();
-  let a = 0;
-  let b = s.length;
-  const n = c.length;
-  while (s.startsWith(c, a)) a += n;
-  while (s.endsWith(c, b)) b -= n;
-  return s.substring(a, b);
-};
 
 export const mod = (a: number, n: number) => a - n * Math.floor(a / n);
 
@@ -279,26 +202,6 @@ export function find(p: any, data?: any): any {
   return undefined;
 }
 
-export const transpose = <T>(g: T[][]): T[][] => {
-  const rows = g.length;
-  const cols = g[0].length;
-  const out = new Array(cols);
-  for (let col = 0; col < cols; ++col) {
-    out[col] = new Array(rows);
-    for (let row = 0; row < rows; ++row) {
-      out[col][row] = g[row][col];
-    }
-  }
-  return out;
-};
-
-export const neighbours = <T>(v: Vec): Vector[] => [
-  new Vector(vx(v) - 1, vy(v)),
-  new Vector(vx(v), vy(v) - 1),
-  new Vector(vx(v) + 1, vy(v)),
-  new Vector(vx(v), vy(v) + 1)
-];
-
 export function getRow<T>(idx: number, g: T[][]): T[] | undefined;
 export function getRow<T>(idx: number): (g: T[][]) => T[] | undefined;
 export function getRow<T>(idx: number, g?: T[][]) {
@@ -349,24 +252,4 @@ export function setCol<T>(idx: number, v: T[], g?: T[][]) {
     return g;
   }
   throw new Error("index or value size out of bounds");
-}
-
-export const ulog = async (did: string, msg?: string) => {
-  await Deno.jupyter.broadcast("display_data", {
-    data: { "text/plain": msg ?? '' },
-    metadata: {},
-    transient: { display_id: did },
-  });
-
-  return async (msg: string) => {
-    await Deno.jupyter.broadcast("update_display_data", {
-      data: { "text/plain": msg },
-      metadata: {},
-      transient: { display_id: did },
-    });
-  }
-}
-
-export const timeout = async (n: number): Promise<void> => {
-  await new Promise((resolve) => setTimeout(resolve, n));
 }

@@ -3,6 +3,7 @@ declare global {
   interface String {
     toInt(): number;
     toNum(): number;
+    trim(c?: string): string;
   }
 }
 
@@ -20,6 +21,17 @@ String.prototype.toNum = function (this: string): number {
   }
   return r;
 };
+
+const originalTrim = String.prototype.trim;
+String.prototype.trim = function(c?: string): string {
+  if (c === undefined || c.length === 0) return originalTrim.call(this);
+  let a = 0;
+  let b = this.length;
+  const n = c.length;
+  while (this.startsWith(c, a)) a += n;
+  while (this.endsWith(c, b)) b -= n;
+  return this.substring(a, b);
+}
 
 export const asInt = (s: string): number => s.toInt();
 export const asNum = (s: string): number => s.toNum();
