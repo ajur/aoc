@@ -9,12 +9,30 @@ export const vx = (v: Vec) => isVecTuple(v) ? v[0] : v.x;
 export const vy = (v: Vec) => isVecTuple(v) ? v[1] : v.y;
 export const dist = (a: Vec, b: Vec): number => Math.hypot(vx(b) - vx(a), vy(b) - vy(a));
 export const manhattan = (a: Vec, b: Vec): number => Math.abs(vx(b) - vx(a)) + Math.abs(vy(b) - vy(a));
-export const neighbours = (v: Vec): Vector[] => [
-  new Vector(vx(v) - 1, vy(v)),
-  new Vector(vx(v), vy(v) - 1),
-  new Vector(vx(v) + 1, vy(v)),
-  new Vector(vx(v), vy(v) + 1)
-];
+
+export const orthogonals = (v: Vec): Vector[] => {
+  const x = vx(v), y = vy(v);
+  return [
+    new Vector(x - 1, y),
+    new Vector(x, y - 1),
+    new Vector(x + 1, y),
+    new Vector(x, y + 1)
+  ];
+};
+export const diagonals = (v: Vec): Vector[] => {
+  const x = vx(v), y = vy(v);
+  return [
+    new Vector(x - 1, y - 1),
+    new Vector(x + 1, y - 1),
+    new Vector(x + 1, y + 1),
+    new Vector(x - 1, y + 1)
+  ];
+}
+export const neighbours = (v: Vec): Vector[] => {
+  const o = orthogonals(v);
+  const d = diagonals(v);
+  return [o[0], d[0], o[1], d[1], o[2], d[2], o[3], d[3]];
+}
 
 const VecTupleConstructor: new (...args: VecTuple) => VecTuple = Array as any;
 
@@ -26,21 +44,37 @@ export class Vector extends VecTupleConstructor implements VecObject, VecTuple {
     );
   }
 
-  public get x() { return this[0]; }
-  public set x(v: number) { this[0] = v; }
-  public get y() { return this[1]; }
-  public set y(v: number) { this[1] = v; }
+  clone() { return new Vector(this[0], this[1]); }
 
-  public eq(v: Vec) {
+  get x() { return this[0]; }
+  set x(v: number) { this[0] = v; }
+  get y() { return this[1]; }
+  set y(v: number) { this[1] = v; }
+
+  eq(v: Vec) {
     return vx(v) === this.x && vy(v) === this.y;
   }
-  public dist(v: Vec) {
+  dist(v: Vec) {
     return Math.hypot(vx(v) - this[0], vy(v) - this[1]);
   }
-  public manhattan(v: Vec) {
+  manhattan(v: Vec) {
     return Math.abs(vx(v) - this[0]) + Math.abs(vy(v) - this[0]);
   }
-  public neighbours() {
-    return neighbours(this);
+  orthogonals() { return orthogonals(this); }
+  diagonals() { return diagonals(this); }
+  neighbours() { return neighbours(this); }
+  add(v: Vec) {
+    if (isVecTuple(v)) {
+      return new Vector(this[0] + v[0], this[1] + v[1]);
+    } else {
+      return new Vector(this[0] + v.x, this[1] + v.y);
+    }
+  }
+  mult(v: number | Vec) {
+    if (typeof v === "number") {
+      return new Vector(this[0] * v, this[1] * v);
+    } else {
+      return new Vector(this[0] * vx(v), this[1] * vy(v));
+    }
   }
 }

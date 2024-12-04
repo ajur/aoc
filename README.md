@@ -3,7 +3,8 @@
 Hello in my solutions for [Advent of Code](https://adventofcode.com/) programming puzzles.
 
 This is not a reference solutions, or anything like that.
-The code here is not meant to be pretty, particularly performant or in any way special.
+The code here is not meant to be pretty, particularly performant or in any way special
+(heck, sometimes its stright up bad codding practices you should not use in production ;P ).
 
 I just like programming puzzles, and learning, so I often combine both.
 
