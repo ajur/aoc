@@ -1,8 +1,9 @@
+export { ascend as asc, descend as desc } from "@std/data-structures";
 
 export const notNull = <T>(a: T | null | undefined): a is T => a !== null && a !== undefined;
 
-export const asc = (a: number, b: number) => a - b;
-export const desc = (a: number, b: number) => b - a;
+// export const asc = ascend;
+// export const desc = descend;
 
 export const eq = <T>(a: T) => (b: T) => a === b;
 export const ne = <T>(a: T) => (b: T) => a !== b;

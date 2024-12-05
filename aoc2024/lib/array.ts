@@ -1,4 +1,4 @@
-import { notNull } from "./misc.ts";
+import { notNull, asc } from "./misc.ts";
 
 export type ArrayMapper<T, V> = (value: T, index: number, arr: T[]) => V;
 export type ArrayPredicate<T> = ArrayMapper<T, boolean>;
@@ -9,6 +9,9 @@ declare global {
     sum(): number;
     count(p?: ArrayPredicate<T>): number;
     combinations(k: number): T[][];
+    isSorted(compareFn?: (a: T, b: T) => number): boolean;
+    remove(from: number, to?: number): Array<T>;
+    insert(at: number, ...values: T[]): Array<T>;
   }
 }
 
@@ -50,7 +53,32 @@ Array.prototype.combinations = function<T>(this: T[], k: number) {
   ];
 }
 
+Array.prototype.isSorted = function<T>(this: T[], compareFn = asc): boolean {
+  for (let i = 1; i < this.length; i++) {
+      if (compareFn(this[i - 1], this[i]) > 0) {
+        return false; // Return false if any pair is out of order
+      }
+    }
+  return true;
+}
+
+Array.prototype.remove = function<T>(this: T[], from: number, to?: number): Array<T> {
+  const count = (to ?? from) - from + 1;
+  if (count < 1) return this;
+  return this.splice(from, count);
+}
+Array.prototype.insert = function<T>(this: T[], at: number, ...values: T[]): Array<T> {
+  this.splice(at, 0, ...values);
+  return this;
+}
+
 export const fst = <T>(arr: [T, ...unknown[]]): T => arr[0];
 export const snd = <T>(arr: [unknown, T, ...unknown[]]): T => arr[1];
 export const last = <T>(arr: [...unknown[], T]): T => arr.at(-1) as T;
 export const take = (n: number) => <T>(arr: T[]): T[] => arr.slice(0, n);
+
+
+// %%
+
+const f = (from: number, to?: number) => (to ?? from) - from + 1;
+f(4, 2)
