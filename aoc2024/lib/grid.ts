@@ -49,12 +49,12 @@ export class Grid<T> {
     return new Grid(Array.from({length: rows}, (_, r) => Array.from({length: cols}, (_, c) => mapper(new Vector(c, r)))));
   }
 
-  static fromString<V>(str: string, opts: CreateFromStringOpts<V>): Grid<V | string> {
+  static fromString<V>(str: string, mapper: (value: string, vec: Vector) => V, sepCol = '', sepRow = '\n',): Grid<V> {
     return new Grid(str
-      .split(opts.sepRow ?? '\n')
+      .split(sepRow ?? '\n')
       .map((row, ridx) => row
-        .split(opts.sepCol ?? '')
-        .map((c, cidx) => opts.mapper ? opts.mapper(c, new Vector(cidx, ridx)) : c))
+        .split(sepCol ?? '')
+        .map((c, cidx) => mapper(c, new Vector(cidx, ridx))))
     );
   }
 
@@ -169,6 +169,16 @@ export class Grid<T> {
       this.data[i][idx] = v[i];
     }
     return this;
+  }
+
+  indexOf(v: T): Vector | undefined {
+    for (let y = 0; y < this.rows; ++y) {
+      for (let x = 0; x < this.cols; ++x) {
+        if (this.data[y]?.[x] === v) {
+          return new Vector(x, y);
+        }
+      }
+    }
   }
 
   pprint(m?: GridMapper<T, string>): string {

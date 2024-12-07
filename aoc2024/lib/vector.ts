@@ -77,4 +77,13 @@ export class Vector extends VecTupleConstructor implements VecObject, VecTuple {
       return new Vector(this[0] * vx(v), this[1] * vy(v));
     }
   }
+  rotate(a: number, roundToIntegers = false) {
+    const cosA = Math.cos(a);
+    const sinA = Math.sin(a);
+    const newX = cosA * this[0] - sinA * this[1];
+    const newY = sinA * this[0] - cosA * this[1]
+    return roundToIntegers
+      ? new Vector(Math.round(newX), Math.round(newY))
+      : new Vector(newX, newY);
+  }
 }
