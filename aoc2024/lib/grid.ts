@@ -94,6 +94,14 @@ export class Grid<T> {
     return new Grid(this.data.map(row => [...row]));
   }
 
+  *[Symbol.iterator]() {
+    for (let row = 0; row < this.rows; ++row) {
+      for (let col = 0; col < this.cols; ++col) {
+        yield this.data[row]?.[col];
+      }
+    }
+  }
+
   transpose(): Grid<T> {
     const out: T[][] = [];
     for (let col = 0; col < this.cols; ++col) {

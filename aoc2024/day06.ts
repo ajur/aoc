@@ -57,10 +57,8 @@ const dirToVal = (v: Vector): Field => {
 }
 
 const parse = (s: string): Grid<number> => Grid.fromString(s.trim(), (v) => PARSE_MAP[v])
-{
-  const g = parse(sample);
-  console.log(g.pprint((val, pos) => drawField(val, pos)));
-}
+// console.log(parse(sample).pprint((val, pos) => drawField(val, pos)))
+
 
 // %%
 const walk = async (g: Grid<number>, animate = 0) => {
@@ -151,7 +149,7 @@ const walkLoopCheck = (grid: Grid<number>, newObstacle?: Vector, tryAltPaths = f
   const [_, __, possibleObstacles] = walkLoopCheck(g, undefined, true, true);
   possibleObstacles.forEach((v) => g.set(v.split(',').map(asInt) as VecTuple, Field.NEW_OBSTACLE));
   // console.log(g.pprint((val, pos) => drawField(val, pos)));
-  console.log(possibleObstacles.size)
+  possibleObstacles.size
 }
 // %%
 
