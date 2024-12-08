@@ -7,4 +7,3 @@ export * from './map.ts';
 export * from './vector.ts';
 export * from './grid.ts';
 export * from './astar.ts';
-export * from './deno_nb.ts';

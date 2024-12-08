@@ -189,6 +189,49 @@ export class Grid<T> {
     }
   }
 
+  findIndex(p: GridPredicate<T>): Vector | undefined {
+    for (let y = 0; y < this.rows; ++y) {
+      for (let x = 0; x < this.cols; ++x) {
+        const v = new Vector(x, y);
+        if (p(this.data[y]?.[x], v, this)) {
+          return v;
+        }
+      }
+    }
+  }
+  *findAllIndexes(p: GridPredicate<T>) {
+    for (let y = 0; y < this.rows; ++y) {
+      for (let x = 0; x < this.cols; ++x) {
+        const v = new Vector(x, y);
+        if (p(this.data[y]?.[x], v, this)) {
+          yield v;
+        }
+      }
+    }
+  }
+  find(p: GridPredicate<T>): T | undefined {
+    for (let y = 0; y < this.rows; ++y) {
+      for (let x = 0; x < this.cols; ++x) {
+        const v = new Vector(x, y);
+        const val = this.data[y]?.[x];
+        if (p(val, v, this)) {
+          return val;
+        }
+      }
+    }
+  }
+  *findAll(p: GridPredicate<T>) {
+    for (let y = 0; y < this.rows; ++y) {
+      for (let x = 0; x < this.cols; ++x) {
+        const v = new Vector(x, y);
+        const val = this.data[y]?.[x];
+        if (p(this.data[y]?.[x], v, this)) {
+          yield val;
+        }
+      }
+    }
+  }
+
   pprint(m?: GridMapper<T, string>): string {
     const mapper: GridMapper<T, string> = m ?? ((v: T | undefined) => `${v}`);
     const sa: string[] = [];

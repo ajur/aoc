@@ -54,36 +54,50 @@ export class Vector extends VecTupleConstructor implements VecObject, VecTuple {
   eq(v: Vec) {
     return vx(v) === this.x && vy(v) === this.y;
   }
+
   dist(v: Vec) {
     return Math.hypot(vx(v) - this[0], vy(v) - this[1]);
   }
   manhattan(v: Vec) {
     return Math.abs(vx(v) - this[0]) + Math.abs(vy(v) - this[0]);
   }
+
   orthogonals() { return orthogonals(this); }
   diagonals() { return diagonals(this); }
   neighbours() { return neighbours(this); }
-  add(v: Vec) {
-    if (isVecTuple(v)) {
-      return new Vector(this[0] + v[0], this[1] + v[1]);
-    } else {
-      return new Vector(this[0] + v.x, this[1] + v.y);
-    }
+
+  add(v: Vec | number) {
+    if (typeof v === "number") return new Vector(this[0] + v, this[1] + v);
+    if (isVecTuple(v)) return new Vector(this[0] + v[0], this[1] + v[1]);
+    return new Vector(this[0] + v.x, this[1] + v.y);
+  }
+  sub(v: Vec | number) {
+    if (typeof v === "number") return new Vector(this[0] - v, this[1] - v);
+    if (isVecTuple(v)) return new Vector(this[0] - v[0], this[1] - v[1]);
+    return new Vector(this[0] - v.x, this[1] - v.y);
   }
   mult(v: number | Vec) {
-    if (typeof v === "number") {
-      return new Vector(this[0] * v, this[1] * v);
-    } else {
-      return new Vector(this[0] * vx(v), this[1] * vy(v));
-    }
+    if (typeof v === "number") return new Vector(this[0] * v, this[1] * v);
+    return new Vector(this[0] * vx(v), this[1] * vy(v));
   }
-  rotate(a: number, roundToIntegers = false) {
+  div(v: number | Vec) {
+    if (typeof v === "number") return new Vector(this[0] / v, this[1] / v);
+    return new Vector(this[0] / vx(v), this[1] / vy(v));
+  }
+  neg() {
+    return this.mult(-1);
+  }
+
+  rotate(a: number) {
     const cosA = Math.cos(a);
     const sinA = Math.sin(a);
-    const newX = cosA * this[0] - sinA * this[1];
-    const newY = sinA * this[0] - cosA * this[1]
-    return roundToIntegers
-      ? new Vector(Math.round(newX), Math.round(newY))
-      : new Vector(newX, newY);
+    return new Vector(
+      cosA * this[0] - sinA * this[1],
+      sinA * this[0] - cosA * this[1]
+    );
+  }
+
+  round() {
+    return new Vector(Math.round(this[0]), Math.round(this[1]));
   }
 }

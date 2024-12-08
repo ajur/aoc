@@ -76,7 +76,7 @@ const walk = async (g: Grid<number>, animate = 0) => {
     const nPos = guardPos.add(dir);
     const val = g.get(nPos);
     if (val !== undefined && (val & Field.OBSTACLE)) {
-      dir = dir.rotate(Math.PI / 2, true);
+      dir = dir.rotate(Math.PI / 2).round();
       continue;
     } else {
       guardPos = nPos;
@@ -123,7 +123,7 @@ const walkLoopCheck = (grid: Grid<number>, newObstacle?: Vector, tryAltPaths = f
     const nVal = g.get(nPos) ?? Field.FLOOR;
 
     if (nVal & Field.OBSTACLE) {
-      dir = dir.rotate(Math.PI / 2, true);
+      dir = dir.rotate(Math.PI / 2).round();
       continue;
     } else {
       if (tryAltPaths && !nPos.eq(startPos) && !possibleObstacles.has(nPos.toString())) {

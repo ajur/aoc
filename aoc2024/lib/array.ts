@@ -11,9 +11,10 @@ declare global {
     combinations(k: number): T[][];
     permutations(k?: number, withRepeats?: boolean): Generator<T[], never, unknown>;
     isSorted(compareFn?: (a: T, b: T) => number): boolean;
-    remove(from: number, to?: number): Array<T>;
-    insert(at: number, ...values: T[]): Array<T>;
+    remove(from: number, to?: number): T[];
+    insert(at: number, ...values: T[]): T[];
     swap(i1: number, i2: number): T[];
+    unique(eq?: (a: T, b: T) => boolean): T[];
   }
 }
 
@@ -89,6 +90,11 @@ Array.prototype.swap = function<T>(this: T[], i1: number, i2: number): T[] {
   this[i1] = this[i2];
   this[i2] = tmp;
   return this;
+}
+
+Array.prototype.unique = function<T>(eq?: (a: T, b: T) => boolean): T[] {
+  eq ??= (a, b) => a === b;
+  return this.filter((a, i) => this.findIndex((b) => eq(a, b)) === i);  // TODO maybe more efficient algo?
 }
 
 export const fst = <T>(arr: [T, ...unknown[]]): T => arr[0];
