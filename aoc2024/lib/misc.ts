@@ -1,34 +1,22 @@
-export { ascend as asc, descend as desc } from "@std/data-structures";
-export * as tc from "@coven/terminal";
-
-export const notNull = <T>(a: T | null | undefined): a is T => a !== null && a !== undefined;
+import { isJupyter, isVerbose } from "./common.ts";
 
 export const eq = <T>(a: T) => (b: T) => a === b;
 export const ne = <T>(a: T) => (b: T) => a !== b;
 export const gt = <T>(a: T) => (b: T) => b > a;
 export const lt = <T>(a: T) => (b: T) => b < a;
 
-export const not = <Args extends any[]>(f: (...args: Args) => boolean) => (...args: Args): boolean => !f(...args);
-export const and = <Args extends any[]>(...ff: Array<(...args: Args) => boolean>) => (...args: Args) => ff.reduce((v, f) => v && f(...args), true);
+export const not = <Args extends unknown[]>(f: (...args: Args) => boolean) => (...args: Args): boolean => !f(...args);
+export const and = <Args extends unknown[]>(...ff: Array<(...args: Args) => boolean>) => (...args: Args) => ff.reduce((v, f) => v && f(...args), true);
 
-export const id = <T>(o: T): T => o;
-
-export const pipe = (...fns: Array<(x: any) => any>) => (x: any) => fns.reduce((v, f) => f(v), x); // typing this is hard -_-
-export const compose = (...fns: Array<(x: any) => any>) => (x: any) => fns.reduceRight((v, f) => f(v), x); // typing this is hard -_-
 export const mapped = <T, U, R>(m: (t: T) => U, f: (...args: U[]) => R) => (...args: T[]) => f(...(args.map(m)))
+// deno-lint-ignore no-explicit-any
+export const pipe = (...fns: Array<(x: any) => any>) => (x: any) => fns.reduce((v, f) => f(v), x); // typing this is hard -_-
+// deno-lint-ignore no-explicit-any
+export const compose = (...fns: Array<(x: any) => any>) => (x: any) => fns.reduceRight((v, f) => f(v), x); // typing this is hard -_-
 
 export const timeout = async (n: number): Promise<void> => {
   await new Promise((resolve) => setTimeout(resolve, n));
 }
-
-export const isJupyter = (() =>{
-  try {
-    return Deno.jupyter !== undefined;
-  } catch (_) {
-    return false;
-  }
-})();
-export const isVerbose = Deno.args.indexOf('-v') >= 0 || Deno.args.indexOf('--verbose') >= 0;
 
 export const log = (...args: Parameters<typeof console.log>) =>
   (isJupyter || isVerbose) && console.log(...args);

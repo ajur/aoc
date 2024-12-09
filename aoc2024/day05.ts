@@ -51,11 +51,6 @@ type RuleNumber = {
 };
 type RulesMap = Map<number, RuleNumber>;
 
-const pickRules = (rules: Rule[], update: Update): Rule[] => {
-  const pages = new Set(update);
-  return rules.filter(([a, b]) => pages.has(a) && pages.has(b));
-}
-
 const getRulesMap = (rules: Rule[]): RulesMap => {
   const rmap: RulesMap = new Map<number, RuleNumber>;
   for (const [a, b] of rules) {

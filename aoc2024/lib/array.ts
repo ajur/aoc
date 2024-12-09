@@ -1,4 +1,5 @@
-import { notNull, asc } from "./misc.ts";
+import { notNull } from "./common.ts";
+import { ascend } from "@std/data-structures";
 
 export type ArrayMapper<T, V> = (value: T, index: number, arr: T[]) => V;
 export type ArrayPredicate<T> = ArrayMapper<T, boolean>;
@@ -65,7 +66,7 @@ Array.prototype.permutations = function*<T>(this: T[], k?: number, withRepeats =
   throw new Error("NOT IMPLEMENTED");
 }
 
-Array.prototype.isSorted = function<T>(this: T[], compareFn = asc): boolean {
+Array.prototype.isSorted = function<T>(this: T[], compareFn = ascend): boolean {
   for (let i = 1; i < this.length; i++) {
       if (compareFn(this[i - 1], this[i]) > 0) {
         return false; // Return false if any pair is out of order

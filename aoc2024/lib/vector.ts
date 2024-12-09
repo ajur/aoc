@@ -1,3 +1,4 @@
+import { $hash, Hashable } from "./common.ts";
 
 export type Vec = VecObject | VecTuple;
 export type VecObject = {x: number, y: number};
@@ -34,13 +35,14 @@ export const neighbours = (v: Vec): Vector[] => {
   return [o[0], d[0], o[1], d[1], o[2], d[2], o[3], d[3]];
 }
 
+// deno-lint-ignore no-explicit-any
 const VecTupleConstructor: new (...args: VecTuple) => VecTuple = Array as any;
 
-export class Vector extends VecTupleConstructor implements VecObject, VecTuple {
+export class Vector extends VecTupleConstructor implements VecObject, VecTuple, Hashable {
   constructor(x: number | Vec, y?: number) {
     super(
-      typeof x === 'number' ? x : isVecTuple(x) ? x[0] : x.x,
-      typeof x === 'number' ? y ?? x : isVecTuple(x) ? x[1] : x.y
+      typeof x === 'number' ? x : vx(x),
+      typeof x === 'number' ? y ?? x : vy(x)
     );
   }
 
@@ -50,6 +52,13 @@ export class Vector extends VecTupleConstructor implements VecObject, VecTuple {
   set x(v: number) { this[0] = v; }
   get y() { return this[1]; }
   set y(v: number) { this[1] = v; }
+
+  override toString() {
+    return `Vector(${this[0]},${this[1]})`;
+  }
+  [$hash]() {
+    return this[0] + ',' + this[1];
+  }
 
   eq(v: Vec) {
     return vx(v) === this.x && vy(v) === this.y;

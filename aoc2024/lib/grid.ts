@@ -1,4 +1,4 @@
-import { notNull } from "./misc.ts";
+import { notNull } from "./common.ts";
 import { Vector, Vec, vy, vx, neighbours } from "./vector.ts";
 import "./math.ts";
 
@@ -87,7 +87,7 @@ export class Grid<T> {
   at(x: Vec | number, y?: number): T | undefined {
     const xx = typeof x === "number" ? x : vx(x);
     const yy = typeof y === "number" ? y : typeof x === "number" ? x : vy(x);
-    return this.data[Math.mod(yy, this.rows)]?.[Math.mod(xx, this.cols)];
+    return this.data[yy >= 0 ? yy :  Math.mod(yy, this.rows)]?.[xx >= 0 ? xx : Math.mod(xx, this.cols)];
   }
 
   clone() {
