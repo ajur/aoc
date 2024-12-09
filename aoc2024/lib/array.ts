@@ -103,6 +103,10 @@ export const snd = <T>(arr: [unknown, T, ...unknown[]]): T => arr[1];
 export const last = <T>(arr: [...unknown[], T]): T => arr.at(-1) as T;
 export const take = (n: number) => <T>(arr: T[]): T[] => arr.slice(0, n);
 
+export type RepeatMapper<T> = (idx: number) => T;
+export const repeat = <T>(a: T | RepeatMapper<T>, n: number): T[] => Array.from({length: n}, (_, i) =>
+  typeof a === "function" ? (a as RepeatMapper<T>)(i) : a);
+
 function* generatePermutations<T>(ar: T[], k?: number): Generator<T[], void, unknown> {
   // https://en.wikipedia.org/wiki/Heap%27s_algorithm
   k ??= ar.length;
