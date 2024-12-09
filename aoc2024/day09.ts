@@ -76,3 +76,5 @@ const solveB = (s: string) => {
 solveB(sample)
 
 // %%
+
+console.log('Sol B:', solveB(data))
