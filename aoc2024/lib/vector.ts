@@ -4,7 +4,7 @@ export type Vec = VecObject | VecTuple;
 export type VecObject = {x: number, y: number};
 export type VecTuple = [x: number, y: number];
 
-const isVecTuple = (v: Vec): v is VecTuple => Array.isArray(v);
+const isVecTuple = (v: Vec): v is VecTuple => Array.isArray(v) && v.length === 2;
 
 export const vx = (v: Vec) => isVecTuple(v) ? v[0] : v.x;
 export const vy = (v: Vec) => isVecTuple(v) ? v[1] : v.y;
@@ -46,7 +46,9 @@ export class Vector extends VecTupleConstructor implements VecObject, VecTuple, 
     );
   }
 
-  clone() { return new Vector(this[0], this[1]); }
+  clone() {
+    return new Vector(this[0], this[1]);
+  }
 
   get x() { return this[0]; }
   set x(v: number) { this[0] = v; }

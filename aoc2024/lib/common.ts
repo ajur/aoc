@@ -12,7 +12,6 @@ export const notNull = <T>(a: T | null | undefined): a is T => a !== null && a !
 export const id = <T>(o: T): T => o;
 
 export const $hash: unique symbol = Symbol("hash");
-export const $hashCache: unique symbol = Symbol("hashCache");
 
 export type Hashable = {
   [$hash](): string | number;

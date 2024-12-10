@@ -1,9 +1,9 @@
 import { isJupyter, isVerbose } from "./common.ts";
 
-export const eq = <T>(a: T) => (b: T) => a === b;
-export const ne = <T>(a: T) => (b: T) => a !== b;
-export const gt = <T>(a: T) => (b: T) => b > a;
-export const lt = <T>(a: T) => (b: T) => b < a;
+export const eq = <T>(a: T) => (b: T | undefined) => a === b;
+export const ne = <T>(a: T) => (b: T | undefined) => a !== b;
+export const gt = <T>(a: T) => (b: T | undefined) => b != null && b > a;
+export const lt = <T>(a: T) => (b: T | undefined) => b != null && b < a;
 
 export const not = <Args extends unknown[]>(f: (...args: Args) => boolean) => (...args: Args): boolean => !f(...args);
 export const and = <Args extends unknown[]>(...ff: Array<(...args: Args) => boolean>) => (...args: Args) => ff.reduce((v, f) => v && f(...args), true);
