@@ -8,6 +8,17 @@ The code here is not meant to be pretty, particularly performant or in any way s
 
 I just like programming puzzles, and learning, so I often combine both.
 
+### [2024](aoc2024) - Back to TS, with Deno2
+
+This time trying to build some proper lib for faster solving aoc...
+or at least for having more fun with it, and learning some more typing tricks along the way :D
+
+In the same time, taking adventage of [Deno 2](https://deno.com/blog/v2.0), 
+its support for [Jupyter notebooks](https://docs.deno.com/runtime/reference/cli/jupyter/),
+but running it not through actual jupyter nb, but through [Zed REPL](https://zed.dev/docs/repl).
+
+Also, as a prep for this year, I've also did some of [AOC 2016](aoc2016)
+
 ### [2023](aoc2023) - Going easy on myself with ugly JS :P
 
 Ok, maybe not that ugly - there are still some concepts I took out of doing aoc in Haskell.
