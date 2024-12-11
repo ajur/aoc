@@ -14,6 +14,21 @@ export const pipe = (...fns: Array<(x: any) => any>) => (x: any) => fns.reduce((
 // deno-lint-ignore no-explicit-any
 export const compose = (...fns: Array<(x: any) => any>) => (x: any) => fns.reduceRight((v, f) => f(v), x); // typing this is hard -_-
 
+export const memo = <A extends readonly unknown[], R>(f: (...args: A) => R, argsHasher?: (args: A) => string | number) => {
+  const cache = new Map<string | number, R>();
+  const hasher = argsHasher ?? ((args: A) => args.toString());
+
+  return (...args: A): R => {
+    const key = hasher(args);
+    let out = cache.get(key);
+    if (out === undefined) {
+      out = f(...args);
+      cache.set(key, out);
+    }
+    return out;
+  }
+}
+
 export const timeout = async (n: number): Promise<void> => {
   await new Promise((resolve) => setTimeout(resolve, n));
 }

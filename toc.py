@@ -21,13 +21,13 @@ def find_files_starting_with_day(root_dir='.'):
         ext = match.group(3)
         yield (aoc, day, ext, file_path)
 
-def map_to_lists(files):
+def map_to_links(files):
   prevAoc = 0
   for aoc, day, ext, path in sorted(find_files_starting_with_day(), reverse=True):
     aocLink = f' [{aoc}](https://adventofcode.com/{aoc}) '
     dayLink = f' [day {day}](https://adventofcode.com/{aoc}/day/{day}) '
     solPath = f' [{langs[ext]}]({path}) '
-    yield (aocLink if prevAoc != aoc else '^', dayLink, solPath)
+    yield (aocLink if prevAoc != aoc else '', dayLink, solPath)
     prevAoc = aoc
 
 def max_lengths(links):
@@ -45,7 +45,7 @@ def separator(maxl):
 
 if __name__ == "__main__":
   files = find_files_starting_with_day()
-  links = list(map_to_lists(files))
+  links = list(map_to_links(files))
   maxl = max_lengths(links)
   rows = to_rows(links, maxl)
   # print('\n'.join(rows))
