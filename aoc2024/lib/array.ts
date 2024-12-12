@@ -10,12 +10,13 @@ declare global {
     sum(): number;
     count(p?: ArrayPredicate<T>): number;
     combinations(k: number): T[][];
-    permutations(k?: number, withRepeats?: boolean): Generator<T[], never, unknown>;
+    permutations(k?: number, withRepeats?: boolean): IterableIterator<T[]>;
     isSorted(compareFn?: (a: T, b: T) => number): boolean;
-    remove(from: number, to?: number): T[];
-    insert(at: number, ...values: T[]): T[];
-    swap(i1: number, i2: number): T[];
     unique(eq?: (a: T, b: T) => boolean): T[];
+    remove(from: number, to?: number): T[];
+    insert(at: number, ...values: T[]): this;
+    swap(i1: number, i2: number): this;
+    shuffle(): this;
   }
 }
 
@@ -57,7 +58,7 @@ Array.prototype.combinations = function<T>(this: T[], k: number) {
   ];
 }
 
-Array.prototype.permutations = function*<T>(this: T[], k?: number, withRepeats = false): Generator<T[], never, unknown> {
+Array.prototype.permutations = function*<T>(this: T[], k?: number, withRepeats = false): IterableIterator<T[]> {
   k ??= this.length;
 
   if (k === this.length && !withRepeats) {
@@ -75,13 +76,13 @@ Array.prototype.isSorted = function<T>(this: T[], compareFn = ascend): boolean {
   return true;
 }
 
-Array.prototype.remove = function<T>(this: T[], from: number, to?: number): Array<T> {
+Array.prototype.remove = function<T>(this: T[], from: number, to?: number): T[] {
   const count = (to ?? from) - from + 1;
   if (count < 1) return this;
   return this.splice(from, count);
 }
 
-Array.prototype.insert = function<T>(this: T[], at: number, ...values: T[]): Array<T> {
+Array.prototype.insert = function<T>(this: T[], at: number, ...values: T[]): T[] {
   this.splice(at, 0, ...values);
   return this;
 }
@@ -96,6 +97,16 @@ Array.prototype.swap = function<T>(this: T[], i1: number, i2: number): T[] {
 Array.prototype.unique = function<T>(eq?: (a: T, b: T) => boolean): T[] {
   eq ??= (a, b) => a === b;
   return this.filter((a, i) => this.findIndex((b) => eq(a, b)) === i);  // TODO maybe more efficient algo?
+}
+
+Array.prototype.shuffle = function<T>(this: T[]): T[] {
+  // Fisher–Yates Shuffle from https://bost.ocks.org/mike/shuffle/
+  let m = this.length;
+  while (m) {  // While there remain elements to shuffle…
+    const i = Math.floor(Math.random() * m--);  // Pick a remaining element…
+    this.swap(i, m)// And swap it with the current element.
+  }
+  return this;
 }
 
 export const fst = <T>(arr: [T, ...unknown[]]): T => arr[0];

@@ -69,7 +69,7 @@ export class Grid<T> {
     return this.data[yy]?.[xx];
   }
 
-  set(v: Vec, val: T): Grid<T> {
+  set(v: Vec, val: T) {
     const x = vx(v);
     const y = vy(v);
 
@@ -122,6 +122,15 @@ export class Grid<T> {
       .map((nv) => [nv, this.get(nv)]);
   }
 
+  forEach(m: GridMapper<T, void>): this {
+    for (let row = 0; row < this.rows; ++row) {
+      for (let col = 0; col < this.cols; ++col) {
+        m(this.data[row]?.[col], new Vector(col, row), this);
+      }
+    }
+    return this;
+  }
+
   map<V>(m: GridMapper<T, V>): Grid<V> {
     const out = new Grid<V>();
     for (let row = 0; row < this.rows; ++row) {
@@ -152,7 +161,7 @@ export class Grid<T> {
     }
   }
 
-  setRow(idx: number, v: T[]): Grid<T> {
+  setRow(idx: number, v: T[]) {
     if (idx < 0) idx = Math.mod(idx, this.rows);
     if (idx >= this.rows) {
       this.rows = idx + 1;
@@ -170,7 +179,7 @@ export class Grid<T> {
     }
   }
 
-  setCol(idx: number, v: T[]): Grid<T> {
+  setCol(idx: number, v: T[]) {
     if (idx < 0) idx = Math.mod(idx, this.cols);
     for (let i = 0; i < this.rows, i < v.length; ++i) {
       this.data[i] ??= [];
