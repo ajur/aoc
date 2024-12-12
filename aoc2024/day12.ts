@@ -84,33 +84,33 @@ const markAllRegions = (g: Grid<Plot>): Region[] => {
 
 const rainbow = (t: number, l = 0.5) => `hsl(${t * 360}, 100%, ${Math.floor(l * 100)}%)`
 
-const printGarden = !isJupyter ? () => {} : (grid: Grid<Plot>, regions: number, CELL_SIZE = 15) => {
-  const SPACING = 0;
-  const WIDTH = grid.width * (CELL_SIZE + SPACING) + SPACING;
-  const HEIGHT = grid.height * (CELL_SIZE + SPACING) + SPACING;
+const printGarden = !isJupyter ? () => {} : (grid: Grid<Plot>, regions: number, cellSize = 15) => {
+  const spacing = 0;
+  const canvasWidth = grid.width * (cellSize + spacing) + spacing;
+  const canvasHeight = grid.height * (cellSize + spacing) + spacing;
 
-  const canvas = createCanvas(WIDTH, HEIGHT);
+  const canvas = createCanvas(canvasWidth, canvasHeight);
   const ctx = canvas.getContext("2d");
 
   const regionsColors = repeat((i) => i * 1 / regions, regions).shuffle();
 
   ctx.fillStyle = "#000000";
-  ctx.fillRect(0, 0, WIDTH, HEIGHT);
+  ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
   for (let row = 0; row < grid.rows; ++row) {
     for (let col = 0; col < grid.cols; ++col) {
       const plot = grid.get(col, row)!;
-      ctx.fillStyle = rainbow(regionsColors[plot.region]);
-      const x = col * (CELL_SIZE + SPACING) + SPACING;
-      const y = row * (CELL_SIZE + SPACING) + SPACING;
-      ctx.fillRect(x, y, CELL_SIZE, CELL_SIZE);
-      ctx.fillStyle = rainbow(regionsColors[plot.region], 0.2);
+      ctx.fillStyle = rainbow(regionsColors[plot.region], 0.8);
+      const x = col * (cellSize + spacing) + spacing;
+      const y = row * (cellSize + spacing) + spacing;
+      ctx.fillRect(x, y, cellSize, cellSize);
+      ctx.fillStyle = rainbow(regionsColors[plot.region], 0.3);
       for (const fd of plot.fences) {
         switch(fd) {
-          case 'W': ctx.fillRect(x + 1, y + 1, 1, CELL_SIZE - 2); break;
-          case 'E': ctx.fillRect(x + CELL_SIZE - 2, y + 1, 1, CELL_SIZE - 2); break;
-          case 'N': ctx.fillRect(x + 1, y + 1, CELL_SIZE - 2, 1); break;
-          case 'S': ctx.fillRect(x + 1, y + CELL_SIZE - 2, CELL_SIZE - 2, 1); break;
+          case 'W': ctx.fillRect(x + 1, y + 1, 1, cellSize - 2); break;
+          case 'E': ctx.fillRect(x + cellSize - 2, y + 1, 1, cellSize - 2); break;
+          case 'N': ctx.fillRect(x + 1, y + 1, cellSize - 2, 1); break;
+          case 'S': ctx.fillRect(x + 1, y + cellSize - 2, cellSize - 2, 1); break;
         }
       }
     }
@@ -181,14 +181,11 @@ const countSides = (g: Grid<Plot>, regions: Region[]): RegionsWithSides[] => {
   return regionSides.map((rs, i) => [...regions[i], rs] as RegionsWithSides);
 }
 
-const solveB = (s: string, printCellSize = 25): number => {
+const solveB = (s: string): number => {
   const g = parse(s);
   const regions = markAllRegions(g);
-  // printGarden(g, regions.length, printCellSize);
   const regionWithSides = countSides(g, regions);
-  // lognb(g.pprint((p) => ''+p?.region));
-  // lognb(regionWithSides);
-  return regionWithSides.map(([_, area, fences, sides]) => area * sides).sum();
+  return regionWithSides.map(([_id, area, _fences, sides]) => area * sides).sum();
 }
 
 assertEquals(solveB(sample1), 80);
