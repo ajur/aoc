@@ -1,0 +1,3 @@
+## Haskell
+
+I think it requires GHCP and Cabal... but dont remember now...
