@@ -1,6 +1,10 @@
 declare global {
   interface Math {
     mod(a: number, n: number): number;
+    gcd(a: number, b: number): number;
+    lcm(...n: number[]): number;
+    /** solve ax + by = c, dx + ey = f */
+    linear2(a: number, b: number, c: number, d: number, e: number, f: number): [number, number];
   }
 
   interface Number {
@@ -16,7 +20,16 @@ declare global {
 }
 
 Math.mod = (a: number, n: number) => a - n * Math.floor(a / n);
+Math.gcd = (a: number, b: number) => (b == 0) ? a : Math.gcd(b, a % b);
+Math.lcm = (...n: number[]) => n.reduce((a,b) => a / Math.gcd(a, b) * b);
 
+Math.linear2 = (a: number, b: number, c: number, d: number, e: number, f: number): [number, number] => {
+  const det = a * e - b * d;
+  return [
+    (c * e - b * f) / det,
+    (a * f - c * d) / det
+  ];
+};
 
 Number.prototype.digits = function(this: number) {
   return Math.log10(this) + 1 | 0;

@@ -14,6 +14,7 @@ Object.prototype.peekMe = function <T>(this: T, f: (t: T) => unknown): T {
 Object.prototype.logMe = function <T>(this: T, msg?: string, json = false): T {
   if (msg && !json) console.log(msg, this);
   if (msg && json) console.log(msg, JSON.stringify(this, null, 2));
+  if (!msg) console.log(this);
   return this;
 }
 Object.prototype.callOnMe = function <T, R>(this: T, f: (t: T) => R): R {
