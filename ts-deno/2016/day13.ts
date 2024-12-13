@@ -1,7 +1,7 @@
 // %%
 
 import { BinaryHeap } from "@std/data-structures";
-import { Grid, VecTuple, Vector, aStar, fst, manhattan, timeout, ulog } from "#lib";
+import { Grid, VecTuple, Vector, aStar, fst, manhattan, timeout, ulog, log } from "#lib";
 
 
 // %%
@@ -24,7 +24,7 @@ for (let y = 0; y < 7; ++y) {
   }
 }
 
-console.log(g.pprint((v) => v ? '#' : '.'))
+log(g.pprint((v) => v ? '#' : '.'))
 // %%
 
 const solveA = async (fav: number, start: VecTuple, end: VecTuple) => {
@@ -78,7 +78,7 @@ const solveB = async (fav: number, start: VecTuple, maxDist: number) => {
 
   const gv2s = ['#', '.'];
   const pg = () => grid.pprint((v) => v === undefined ? ' ' : gv2s[v]);
-  const drawer = await ulog(`solAout${fav}${start}${maxDist}`, pg())
+  const drawer = await ulog(pg())
 
   const nbs = (v: Vector) => {
     const nbrs = grid.neighbours(v);

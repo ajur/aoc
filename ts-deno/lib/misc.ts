@@ -1,4 +1,5 @@
 import { isJupyter, isVerbose } from "./common.ts";
+import { cpl, ed } from "./ansi.ts";
 
 export const eq = <T>(a: T) => (b: T | undefined) => a === b;
 export const ne = <T>(a: T) => (b: T | undefined) => a !== b;
@@ -38,14 +39,14 @@ export const log = (...args: Parameters<typeof console.log>) =>
 export const lognb = (...args: Parameters<typeof console.log>) =>
   isJupyter && console.log(...args);
 
-export const ulog = async (did: string, msg?: string) => {
-  if (isJupyter) {
+export const ulog = async (target: unknown, did?: string) => {
+  did ??= `ulogDid-${Math.floor(Math.random() * 100000)}`;
+  if (isJupyter && typeof target === "string") {
     await Deno.jupyter.broadcast("display_data", {
-      data: { "text/plain": msg ?? '' },
+      data: { "text/plain": target },
       metadata: {},
       transient: { display_id: did },
     });
-
     return async (msg: string) => {
       await Deno.jupyter.broadcast("update_display_data", {
         data: { "text/plain": msg },
@@ -53,12 +54,19 @@ export const ulog = async (did: string, msg?: string) => {
         transient: { display_id: did },
       });
     }
+  } else if (isJupyter) {
+    await Deno.jupyter.display(target ?? '', {display_id: did});
+    return async (trg: unknown) => await Deno.jupyter.display(trg, { display_id: did, update: true});
   } else if (isVerbose) {
-    const logger = (msg: string) => {
-      console.clear();
-      console.log(msg);
+    let lastMsgLen = 0;
+    const logger = (trg: unknown, clear = true) => {
+      console.log(clear ? (cpl(lastMsgLen + 1) + ed() + trg) : trg);
+      if (typeof trg === "string") {
+        lastMsgLen = 0;
+        for (let i = 0; i < trg.length; ++i) lastMsgLen += (trg.charAt(i) === '\n' ? 1 : 0);
+      }
     }
-    if (msg) logger(msg);
+    logger(target, false);
     return logger;
   } else {
     return () => {};

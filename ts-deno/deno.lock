@@ -1,8 +1,6 @@
 {
   "version": "4",
   "specifiers": {
-    "jsr:@coven/constants@~0.3.3": "0.3.3",
-    "jsr:@coven/terminal@~0.3.3": "0.3.3",
     "jsr:@denosaurs/plug@1.0.5": "1.0.5",
     "jsr:@gfx/canvas@~0.5.8": "0.5.8",
     "jsr:@std/assert@0.214": "0.214.0",
@@ -20,15 +18,6 @@
     "jsr:@std/path@0.217.0": "0.217.0"
   },
   "jsr": {
-    "@coven/constants@0.3.3": {
-      "integrity": "e70aac8ce67055832d08475619b9303cb362498c7a594886b8410a18cb81b8ef"
-    },
-    "@coven/terminal@0.3.3": {
-      "integrity": "2b64b209c7f0f9020bf635d15cbf624b338645aed6e63bc7488c3a7a5bcdb8e4",
-      "dependencies": [
-        "jsr:@coven/constants"
-      ]
-    },
     "@denosaurs/plug@1.0.5": {
       "integrity": "04cd988da558adc226202d88c3a434d5fcc08146eaf4baf0cea0c2284b16d2bf",
       "dependencies": [
@@ -106,7 +95,6 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@coven/terminal@~0.3.3",
       "jsr:@gfx/canvas@~0.5.8",
       "jsr:@std/assert@^1.0.9",
       "jsr:@std/data-structures@^1.0.4"

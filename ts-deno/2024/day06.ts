@@ -1,4 +1,4 @@
-import { Grid, VecTuple, Vector, asInt, timeout, ulog } from  "#lib";
+import { Grid, Vector, lognb, timeout, ulog, isJupyter, isVerbose, fmtt } from  "#lib";
 // %%
 
 const sample = `
@@ -32,12 +32,12 @@ const PARSE_MAP: Record<string, Field> = {
 }
 
 const drawField = (f: number | undefined, pos: Vector, curPos?: Vector) => {
-  if (curPos?.eq(pos)) return '@';
+  if (curPos?.eq(pos)) return fmtt('$blue', '@');
   switch(f) {
     case Field.FLOOR: return '.';
     case Field.OBSTACLE: return '#';
-    case Field.NEW_OBSTACLE: return '\u001b[31mO\u001b[39m';
-    case Field.CURRENT: return '\u001b[31m@\u001b[39m';
+    case Field.NEW_OBSTACLE: return fmtt('$red', 'O');
+    case Field.CURRENT: return fmtt('$blue', '@');
     case Field.UP: return '^';
     case Field.DOWN: return 'v';
     case Field.LEFT: return '<';
@@ -57,20 +57,14 @@ const dirToVal = (v: Vector): Field => {
 }
 
 const parse = (s: string): Grid<number> => Grid.fromString(s.trim(), (v) => PARSE_MAP[v])
-// console.log(parse(sample).pprint((val, pos) => drawField(val, pos)))
-
+lognb(parse(sample).pprint((val, pos) => drawField(val, pos)))
 
 // %%
 const walk = async (g: Grid<number>, animate = 0) => {
   let guardPos = g.indexOf(Field.CURRENT)!;
   let dir = new Vector(0, -1);
 
-  let logger: any;
-  try {
-   logger = animate ? await ulog("walker", g.pprint()) : null;
-  } catch(_) {
-    animate = 0;
-  }
+  const logger = animate ? await ulog(g.pprint()) : undefined;
   while (g.get(guardPos) !== undefined) {
     g.set(guardPos, g.get(guardPos)! | dirToVal(dir));
     const nPos = guardPos.add(dir);
@@ -89,7 +83,9 @@ const walk = async (g: Grid<number>, animate = 0) => {
   return g;
 }
 
-await walk(parse(sample), 50);
+if (isVerbose || isJupyter) {
+  (await walk(parse(sample), 50)).count(v => !!(v! & Field.PATH));
+}
 // %%
 
 const solveA = async (s: string) => (await walk(parse(s))).count(v => !!(v! & Field.PATH));
@@ -100,7 +96,7 @@ console.log("Sol A:", await solveA(data))
 
 // %%
 
-const walkLoopCheck = (grid: Grid<number>, newObstacle?: Vector, tryAltPaths = false, log = false): [Grid<number>, hasLooped: boolean, Set<string>] => {
+const walkLoopCheck = (grid: Grid<number>, newObstacle?: Vector, tryAltPaths = false): [Grid<number>, hasLooped: boolean, Set<string>] => {
   const g = grid.clone();
   if (newObstacle) {
     g.set(newObstacle, Field.NEW_OBSTACLE);
@@ -110,13 +106,6 @@ const walkLoopCheck = (grid: Grid<number>, newObstacle?: Vector, tryAltPaths = f
   let dir = new Vector(0, -1);
   let stepsMade = 0;
   const possibleObstacles = new Set<string>();
-
-  const logger = log
-    ? (steps: number, obstacles: number) => {
-      // console.clear();
-      console.log(`steps ${steps.toString().padStart(6)}, possible obstacles found ${obstacles.toString().padStart(4)}`);
-    }
-    : () => {};
 
   while (g.get(guardPos) !== undefined) {
     const nPos = guardPos.add(dir);
@@ -138,20 +127,9 @@ const walkLoopCheck = (grid: Grid<number>, newObstacle?: Vector, tryAltPaths = f
       guardPos = nPos;
       ++stepsMade;
     }
-    // logger(stepsMade, possibleObstacles.length);
   }
   return [g, false, possibleObstacles];
 }
-
-{
-  const g = parse(data);
-  // g.set([3, 6], OBSTACLE);
-  const [_, __, possibleObstacles] = walkLoopCheck(g, undefined, true, true);
-  possibleObstacles.forEach((v) => g.set(v.split(',').map(asInt) as VecTuple, Field.NEW_OBSTACLE));
-  // console.log(g.pprint((val, pos) => drawField(val, pos)));
-  possibleObstacles.size
-}
-// %%
 
 const solveB = (s: string) => {
   const g = parse(s);
