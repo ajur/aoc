@@ -1,4 +1,4 @@
-import { Grid, Vector, lognb, timeout, ulog, isJupyter, isVerbose, fmtt } from  "#lib";
+import { Grid, Vector, lognb, timeout, display, updateDisplay, isJupyter, isVerbose, fmtt } from  "#lib";
 // %%
 
 const sample = `
@@ -64,7 +64,7 @@ const walk = async (g: Grid<number>, animate = 0) => {
   let guardPos = g.indexOf(Field.CURRENT)!;
   let dir = new Vector(0, -1);
 
-  const logger = animate ? await ulog(g.pprint()) : undefined;
+  animate && await display(g.pprint());
   while (g.get(guardPos) !== undefined) {
     g.set(guardPos, g.get(guardPos)! | dirToVal(dir));
     const nPos = guardPos.add(dir);
@@ -77,7 +77,7 @@ const walk = async (g: Grid<number>, animate = 0) => {
     }
     if (animate) {
       await timeout(animate);
-      await logger!(g.pprint((val, pos) => drawField(val, pos, guardPos)))
+      animate && updateDisplay(g.pprint((val, pos) => drawField(val, pos, guardPos)))
     }
   }
   return g;

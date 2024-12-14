@@ -39,36 +39,45 @@ export const log = (...args: Parameters<typeof console.log>) =>
 export const lognb = (...args: Parameters<typeof console.log>) =>
   isJupyter && console.log(...args);
 
-export const ulog = async (target: unknown, did?: string) => {
-  did ??= `ulogDid-${Math.floor(Math.random() * 100000)}`;
+let _lastDisplayId: string = '';
+let _lastMsgLen: number = 0;
+const _countLines = (s: string) => {
+  let nls = 1;
+  for (let i = 0; i < s.length; ++i) {
+    if (s.charAt(i) === '\n') ++nls;
+  }
+  return nls;
+}
+export const display = async (target: unknown, did?: string) => {
+  _lastDisplayId = did ?? `ulogDid-${Math.floor(Math.random() * 100000)}`;
   if (isJupyter && typeof target === "string") {
     await Deno.jupyter.broadcast("display_data", {
       data: { "text/plain": target },
       metadata: {},
+      transient: { display_id: _lastDisplayId },
+    });
+  } else if (isJupyter) {
+    await Deno.jupyter.display(target ?? '', {display_id: _lastDisplayId});
+  } else if (isVerbose) {
+    const trg = typeof target === "string" ? target : (target?.toString() ?? (''+target));
+    console.log(trg);
+    _lastMsgLen = _countLines(trg);
+  }
+}
+
+export const updateDisplay = async (target: unknown, did?: string) => {
+  did ??= _lastDisplayId;
+  if (isJupyter && typeof target === "string") {
+    await Deno.jupyter.broadcast("update_display_data", {
+      data: { "text/plain": target },
+      metadata: {},
       transient: { display_id: did },
     });
-    return async (msg: string) => {
-      await Deno.jupyter.broadcast("update_display_data", {
-        data: { "text/plain": msg },
-        metadata: {},
-        transient: { display_id: did },
-      });
-    }
   } else if (isJupyter) {
-    await Deno.jupyter.display(target ?? '', {display_id: did});
-    return async (trg: unknown) => await Deno.jupyter.display(trg, { display_id: did, update: true});
+    await Deno.jupyter.display(target, { display_id: did, update: true});
   } else if (isVerbose) {
-    let lastMsgLen = 0;
-    const logger = (trg: unknown, clear = true) => {
-      console.log(clear ? (cpl(lastMsgLen + 1) + ed() + trg) : trg);
-      if (typeof trg === "string") {
-        lastMsgLen = 0;
-        for (let i = 0; i < trg.length; ++i) lastMsgLen += (trg.charAt(i) === '\n' ? 1 : 0);
-      }
-    }
-    logger(target, false);
-    return logger;
-  } else {
-    return () => {};
+    const trg = typeof target === "string" ? target : (target?.toString() ?? (''+target));
+    console.log(cpl(_lastMsgLen) + ed() + trg);
+    _lastMsgLen = _countLines(trg);
   }
 }

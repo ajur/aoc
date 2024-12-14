@@ -1,7 +1,7 @@
 // %%
 
 import { BinaryHeap } from "@std/data-structures";
-import { Grid, VecTuple, Vector, aStar, fst, manhattan, timeout, ulog, log } from "#lib";
+import { Grid, VecTuple, Vector, aStar, fst, manhattan, timeout, display, updateDisplay, log } from "#lib";
 
 
 // %%
@@ -36,7 +36,7 @@ const solveA = async (fav: number, start: VecTuple, end: VecTuple) => {
   const gv2s = ['#', '.', 'O', 'S', 'T'];
   const pg = () => grid.pprint((v) => v === undefined ? ' ' : gv2s[v]);
 
-  const drawer = await ulog(`solAout${fav}${start}${end}`, pg())
+  display(pg())
 
   const [len, path] = aStar({
     start: new Vector(start),
@@ -49,7 +49,7 @@ const solveA = async (fav: number, start: VecTuple, end: VecTuple) => {
           grid.set(nb[0], nb[1]);
         }
       });
-      drawer(pg())
+      updateDisplay(pg())
       return nbrs.filter(([_, val]) => val! > 0).map(fst) as Vector[]
     },
     score: manhattan,
@@ -60,7 +60,7 @@ const solveA = async (fav: number, start: VecTuple, end: VecTuple) => {
     if (!v.eq(start) && !v.eq(end)) grid.set(v, 2);
   }
   await timeout(100);
-  await drawer(pg())
+  await updateDisplay(pg())
   return len;
 }
 await solveA(10, [1, 1], [7, 4]);
@@ -78,7 +78,7 @@ const solveB = async (fav: number, start: VecTuple, maxDist: number) => {
 
   const gv2s = ['#', '.'];
   const pg = () => grid.pprint((v) => v === undefined ? ' ' : gv2s[v]);
-  const drawer = await ulog(pg())
+  await display(pg())
 
   const nbs = (v: Vector) => {
     const nbrs = grid.neighbours(v);
@@ -88,7 +88,7 @@ const solveB = async (fav: number, start: VecTuple, maxDist: number) => {
         grid.set(nb[0], nb[1]);
       }
     });
-    drawer(pg())
+    updateDisplay(pg())
     return nbrs.filter(([_, val]) => val! > 0).map(fst) as Vector[]
   };
   const hash = ([x, y]: VecTuple) => `${x},${y}`;
@@ -112,11 +112,11 @@ const solveB = async (fav: number, start: VecTuple, maxDist: number) => {
         seen.set(nbHsh, nbDist);
       }
     }
-    await drawer(pg())
+    await updateDisplay(pg())
   }
 
   await timeout(100);
-  await drawer(pg())
+  await updateDisplay(pg())
   return [...seen.values()].filter(v => v <= maxDist).length;
 }
 
