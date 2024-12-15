@@ -1,4 +1,5 @@
 import { $hash, Hashable } from "./common.ts";
+import './math.ts';
 
 export type Vec = VecObject | VecTuple;
 export type VecObject = {x: number, y: number};
@@ -97,6 +98,11 @@ export class Vector extends VecTupleConstructor implements VecObject, VecTuple, 
   }
   neg() {
     return this.mult(-1);
+  }
+  modulo(v: number | Vec) {
+    const mx = typeof v === "number" ? v : vx(v);
+    const my = typeof v === "number" ? v : vy(v);
+    return new Vector(Math.mod(this[0], mx), Math.mod(this[1], my));
   }
 
   rotate(a: number) {

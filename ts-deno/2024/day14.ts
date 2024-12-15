@@ -1,6 +1,6 @@
 // %%
 import { createCanvas } from "@gfx/canvas";
-import { Vector, Vec, vx, vy, display, updateDisplay, timeout } from "#lib";
+import { Vector, Vec, vx, vy, display, updateDisplay } from "#lib";
 // %%
 
 const sample = `
@@ -48,7 +48,7 @@ const getQuadrant = (sv: Vec) => {
 }
 
 const solveB = (s: string, size: Vec, moves: number) => parse(s)
-  .map(({p, v}) => p.add(v.mult(moves)).callOnMe(([x, y]) => new Vector(Math.mod(x, vx(size)), Math.mod(y, vy(size)))))
+  .map(({p, v}) => p.add(v.mult(moves)).modulo(size))
   .map(getQuadrant(size))
   .filter(s => s !== 'X')
   .sort()
@@ -101,11 +101,7 @@ const animateRobots = async (size: Vec, robots: Robot[] = []) => {
   for (let i = 0; i < 10000; ++i) {
     const onCenter: number[] = [];
     robots.forEach((r: Robot) => {
-      const np = r.p.add(r.v);
-      r.p = new Vector(
-        Math.mod(np.x, cols),
-        Math.mod(np.y, rows)
-      );
+      r.p = r.p.add(r.v).modulo(size);
       if (r.p.x === center) onCenter.push(r.p.y);
     })
     onCenter.sort();
