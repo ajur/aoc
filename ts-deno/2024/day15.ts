@@ -1,7 +1,6 @@
 // %%
-import { Vector, Grid, log, eq, notNull, display, updateDisplay, timeout } from "#lib";
-import { isVerbose } from "../lib/common.ts";
-import { isJupyter } from "../lib/common.ts";
+import { createCanvas, Image } from "@gfx/canvas";
+import { Vector, Grid, log, eq, notNull, display, updateDisplay, timeout, isVerbose, isJupyter } from "#lib";
 
 // %%
 
@@ -54,11 +53,13 @@ const moveIfPossible = (g: Grid<string>, pos: Vector, dir: Vector): Vector | und
 const moveAll = async (g: Grid<string>, moves: Vector[], algo: typeof moveIfPossible, animate = 0) => {
   let robotPos = g.indexOf('@')!;
   if (!isJupyter && !isVerbose) animate = 0;
-  animate && await display(g.pprint());
+  const show = animate === 0 ? null : animate === 42 ? await gridDrawer(g) : await display(g.pprint());
   for (const move of moves) {
     robotPos = algo(g, robotPos, move)!;
-    animate && await timeout(animate)
-    animate && await updateDisplay(g.pprint());
+    if (animate > 0) {
+      await timeout(animate);
+      show ? await show() : await updateDisplay(g.pprint());
+    }
   }
   return g;
 }
@@ -184,3 +185,48 @@ const solveB = async (s: string, animate = 0) =>
 // %%
 
 console.log('Sol B:', await solveB(data));
+
+// %%
+
+const gridDrawer = async (g: Grid<string>) => {
+  const cellSize = 12;
+  const spacing = 0;
+  const canvasWidth = g.cols * (cellSize + spacing) + spacing;
+  const canvasHeight = g.rows * (cellSize + spacing) + spacing;
+
+  const canvas = createCanvas(canvasWidth, canvasHeight);
+  const ctx = canvas.getContext("2d");
+
+  const spr = await Image.load('./img/day15.png');
+  const tileMap = ['#', 'O', '[', ']', '.', '@'];
+
+  const drawState = () => {
+    ctx.fillStyle = "#333399";
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    for (let row = 0; row < g.rows; ++row) {
+      for (let col = 0; col < g.cols; ++col) {
+        const val = g.get(col, row)!;
+        const x = col * (cellSize + spacing) + spacing;
+        const y = row * (cellSize + spacing) + spacing;
+        ctx.drawImage(spr, 4 * 12, 0, 12, 12, x, y, 12, 12)
+        const tx = tileMap.indexOf(val)!;
+        ctx.drawImage(spr, tx * 12, 0, 12, 12, x, y, 12, 12)
+      }
+    }
+    return canvas;
+  }
+  await display(drawState());
+  await timeout(5000);
+  return async () => await updateDisplay(drawState());
+}
+
+if (isJupyter) {
+  const [g] = parse(data);
+  await gridDrawer(g)
+}
+
+// %%
+if (isJupyter) {
+  await solveB(sample2, 42);
+  // await solveB(data, 42);
+}
