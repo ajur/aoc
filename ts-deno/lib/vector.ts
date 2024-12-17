@@ -110,11 +110,57 @@ export class Vector extends VecTupleConstructor implements VecObject, VecTuple, 
     const sinA = Math.sin(a);
     return new Vector(
       cosA * this[0] - sinA * this[1],
-      sinA * this[0] - cosA * this[1]
+      sinA * this[0] + cosA * this[1]
     );
   }
 
   round() {
     return new Vector(Math.round(this[0]), Math.round(this[1]));
   }
+}
+
+
+export class Direction extends Vector {
+  name: string = '?';
+  char: string = '?';
+  private constructor(x: number | Vec, y?: number, name?: string, char?: string) {
+    super(
+      Math.sign(typeof x === 'number' ? x : vx(x)),
+      Math.sign(typeof x === 'number' ? y ?? x : vy(x))
+    );
+    if (name) {
+      this.name = name;
+      Direction.str2dir.set(name, this);
+    }
+    if (char) {
+      this.char = char;
+      Direction.str2dir.set(char, this);
+    }
+    Direction.str2dir.set(this[$hash](), this);
+  }
+
+  static str2dir = new Map<string, Direction>();
+
+  static N = new Direction(0, -1, 'N', '^');
+  static S = new Direction(0, 1, 'S', 'v');
+  static W = new Direction(-1, 0, 'W', '<');
+  static E = new Direction(1, 0, 'E', '>');
+  static NW = new Direction(-1, -1, 'NW', 'F');
+  static NE = new Direction(1, -1, 'NE', '7');
+  static SE = new Direction(1, 1, 'SE', 'J');
+  static SW = new Direction(-1, 1, 'SW', 'L');
+
+  static from(c: string | Vector | Vec): Direction | undefined {
+    const hsh = typeof c === 'string' ? c : c instanceof Vector ? c[$hash]() : (vx(c) + ',' + vy(c));
+    return Direction.str2dir.get(hsh);
+  }
+
+  fw() { return this; }
+  left() { return Direction.from(this.rotate(-Math.PI / 2).round())!; }
+  right() { return Direction.from(this.rotate(Math.PI / 2).round())!; }
+  back() { return Direction.from(this.neg())!; }
+  fwLeft() { return Direction.from(this.rotate(-Math.PI / 4).round())!; }
+  fwRight() { return Direction.from(this.rotate(Math.PI / 4).round())!; }
+  backLeft() { return Direction.from(this.rotate(- 3 * (Math.PI / 4)).round())!; }
+  backRight() { return Direction.from(this.rotate(3 * (Math.PI / 4)).round())!; }
 }

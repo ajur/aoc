@@ -1,7 +1,7 @@
 // %%
 
 import { BinaryHeap } from "@std/data-structures";
-import { Grid, VecTuple, Vector, aStar, fst, manhattan, timeout, display, updateDisplay, log } from "#lib";
+import { Grid, VecTuple, Vector, aStar, fst, timeout, display, updateDisplay, log, $hash } from "#lib";
 
 
 // %%
@@ -38,9 +38,9 @@ const solveA = async (fav: number, start: VecTuple, end: VecTuple) => {
 
   display(pg())
 
-  const [len, path] = aStar({
+  const [[len, path]] = aStar({
     start: new Vector(start),
-    end: new Vector(end),
+    isEnd: (v: Vector) => v.eq(end),
     nbs: (v: Vector) => {
       const nbrs = grid.neighbours(v);
       nbrs.forEach((nb) => {
@@ -52,8 +52,8 @@ const solveA = async (fav: number, start: VecTuple, end: VecTuple) => {
       updateDisplay(pg())
       return nbrs.filter(([_, val]) => val! > 0).map(fst) as Vector[]
     },
-    score: manhattan,
-    hash: ([x, y]: Vector) => `${x},${y}`,
+    score: (v: Vector) => v.manhattan(end),
+    hash: (v: Vector) => v[$hash](),
   });
 
   for (const v of path) {
@@ -99,7 +99,7 @@ const solveB = async (fav: number, start: VecTuple, maxDist: number) => {
   seen.set(hash(start), 0);
 
   while (queue.length > 0) {
-    const [tile, dist, hsh, parent] = queue.pop()!;
+    const [tile, dist, hsh] = queue.pop()!;
 
     if (dist === maxDist || dist > seen.get(hsh)!) continue;
 

@@ -112,10 +112,11 @@ const solve = (s: string): [number, State[]] => {
 
   return aStar({
     start: initialState,
-    end: Object.entries(initialState).map(([k, _v]) => [k, floors.length - 1]).callOnMe(Object.fromEntries) as State,
+    isEnd: (st: State) => Object.values(st).every(v => v === floors.length - 1),
+    // end: Object.entries(initialState).map(([k, _v]) => [k, floors.length - 1]).callOnMe(Object.fromEntries) as State,
     nbs: (s: State): State[] => findAllMoves(s).map((mv) => doMove(mv, s)).filter(isValidState),
     hash: serializeState
-  })
+  })[0];
 }
 solve(sample)
 

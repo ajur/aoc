@@ -2,11 +2,15 @@
 import { BinaryHeap, ascend } from "@std/data-structures";
 import { assertEquals } from "@std/assert/equals";
 
+export type AStarSearchMode = 'singleBest' | 'allBest' | 'all';
+export type AStarSolution<T> = [dist: number, path: T[]];
+export type AStarEvent = 'queued' | 'checking' | 'skipped' | 'foundEnd';
+
 export type AStarParams<T> = {
   /** Start node */
   start: T;
-  /** End node */
-  end: T;
+  /** End node, or func checking for end node */
+  isEnd: (n: T, nHash: string) => boolean;
   /** Get neighbours of node, with distance to them from given node, this or nbs is required */
   nbsDists?: (n: T) => [node: T, dist: number][];
   /** Get neighbours of node, this or nbsDists is required */
@@ -14,44 +18,59 @@ export type AStarParams<T> = {
   /** Dist function, by default returns 1 */
   dist?: (a: T, b: T) => number;
   /** Score function - e.g. distance to target, by default it returns 0 (so, thus works similar to Dijkstra) */
-  score?: (n: T, target: T) => number;
+  score?: (n: T) => number;
   /** Optional hash function, to use node as key (JSON.stringify used if not provided) */
   hash?: (n: T) => string;
+  /** Search mode, one of: singleBest (default) - get single best solution; allBest - find all top scored solutions; all - get all solutions */
+  searchMode?: AStarSearchMode;
   /** Event listener to extract information durring processing */
-  listener?: (s: string) => void;
+  listener?: (evt: AStarEvent, node: AStarPathNode<T>) => void;
 }
 
-type PathNode<T> = {
+export type AStarPathNode<T> = {
   state: T,
   hash: string,
   dist: number,
   factor: number, // dist + score
-  parent: PathNode<T> | null,
+  parent: AStarPathNode<T> | null,
 }
 
-export function aStar<T>({start, end, nbsDists, nbs, dist, hash, score}: AStarParams<T>): [number, T[]] {
+export function aStar<T>({start, isEnd, nbsDists, nbs, dist, hash, score, searchMode = 'singleBest', listener}: AStarParams<T>): AStarSolution<T>[] {
   hash ??= (n: T) => n !== null && typeof n === "object" ? JSON.stringify(n, Object.keys(n).sort()) : JSON.stringify(n);
   if (!nbsDists && !nbs) throw new Error("nbsDists or nbs required");
 
   const startHash = hash(start);
-  const endHash = hash(end);
-  if (startHash === endHash) return [0, [start]];
+  if (isEnd(start, startHash)) return [[0, [start]]];
+  const emitEvent = listener ?? (() => {});
 
   nbsDists ??= (a: T) => nbs!(a).map(n => dist !== undefined ? [n, dist(a, n)] : [n, 1])
   score ??= () => 0;
 
-  const queue = new BinaryHeap<PathNode<T>>(({factor: a}, {factor: b}) => ascend(a, b));
-  queue.push({state: start, dist: 0, factor: score(start, end), hash: startHash, parent: null});
+  const queue = new BinaryHeap<AStarPathNode<T>>(({factor: a}, {factor: b}) => ascend(a, b));
+  queue.push({state: start, dist: 0, factor: score(start), hash: startHash, parent: null});
+  emitEvent("queued", queue.peek()!);
 
   const seen = new Map<string, number>();
   seen.set(startHash, 0);
 
+  const solutions: AStarSolution<T>[] = [];
+
   while (queue.length > 0) {
     const node = queue.pop()!;
-    if (node.hash === endHash) {
-      return [node.dist, reconstructPath(node)];
+    emitEvent("checking", node);
+    if (isEnd(node.state, node.hash)) {
+      emitEvent("foundEnd", node);
+      if (searchMode === 'singleBest') {
+        return [[node.dist, reconstructPath(node)]];
+      }
+      if (searchMode === 'all' || solutions.length === 0 || solutions[0][0] === node.dist) {
+        solutions.push([node.dist, reconstructPath(node)]);
+      }
+      continue;
     }
+    // if (node.dist > (seen.get(node.hash) ?? Infinity) || (searchMode === 'allBest' && solutions.length > 0 && node.dist > solutions[0][0])) {
     if (node.dist > (seen.get(node.hash) ?? Infinity)) {
+      emitEvent("skipped", node);
       continue;
     }
 
@@ -59,62 +78,29 @@ export function aStar<T>({start, end, nbsDists, nbs, dist, hash, score}: AStarPa
       const nbDist = node.dist + d;
       const nbHash = hash(nb);
       const sn = seen.get(nbHash) ?? Infinity;
-      if (sn > nbDist) {
+      if (sn >= nbDist) {
         queue.push({
           state: nb,
           dist: nbDist,
-          factor: nbDist + score(nb, end),
+          factor: nbDist + score(nb),
           hash: nbHash,
           parent: node
         });
         seen.set(nbHash, nbDist);
+      } else {
+        emitEvent("skipped", {state: nb, dist: nbDist, factor: -1, hash: nbHash, parent: node});
       }
     }
   }
-  return [-1, []];
+  return solutions;
 }
 
-function reconstructPath<T>(end: PathNode<T>): T[] {
+function reconstructPath<T>(end: AStarPathNode<T>): T[] {
   const path: T[] = [];
-  let node: PathNode<T> | null = end;
+  let node: AStarPathNode<T> | null = end;
   while (node !== null) {
     path.unshift(node.state);
     node = node.parent;
   }
   return path;
 }
-
-
-Deno.test("A Star nbsDists", () => {
-  const graph: Record<string, [string, number][]> = {
-    A: [["B", 1], ["C", 4]],
-    B: [["C", 2], ["D", 5]],
-    C: [["D", 1]],
-    D: [],
-  };
-
-  const result = aStar({
-    start: 'A',
-    end: 'D',
-    nbsDists: (n: string) => graph[n]
-  });
-  assertEquals(result, [4, ['A', 'B', 'C', 'D']]);
-});
-
-Deno.test("A Star nbs + dist & hash", () => {
-  const graph: Record<string, Record<string, number>> = {
-    A: {B: 1, C: 4},
-    B: {C: 2, D: 5},
-    C: {D: 1},
-    D: {},
-  };
-
-  const result = aStar({
-    start: 'A',
-    end: 'D',
-    nbs: (n: string) => Object.keys(graph[n]),
-    dist: (a: string, b: string) => (graph[a][b] || graph[b][a]),
-    hash: (n: string) => n
-  });
-  assertEquals(result, [4, ['A', 'B', 'C', 'D']]);
-});

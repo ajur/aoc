@@ -69,6 +69,8 @@ export const fmtt = (...args: unknown[]) =>
     }
   }).join('') + sgr.$reset;
 
+fmtt.c = sgr;  // for less imports
+
 sgr.$reset = sgr(0);
 sgr.$resetFg = sgr(39);
 sgr.$resetBg = sgr(49);
