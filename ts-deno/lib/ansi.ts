@@ -63,47 +63,47 @@ export const fmtt = (...args: unknown[]) =>
   args.map(arg => {
     if (typeof arg === "string") {
       // deno-lint-ignore no-explicit-any
-      return arg.replace(/\$(\w+)/g, (match) => (sgr as any)[match] || match)
+      return arg.replace(/§{?(\w+)}?/g, (_match, group) => (sgr as any)[group] || group)
     } else {
       return arg?.toString() ?? '' + arg;
     }
-  }).join('') + sgr.$reset;
+  }).join('') + sgr.reset;
 
 fmtt.c = sgr;  // for less imports
 
-sgr.$reset = sgr(0);
-sgr.$resetFg = sgr(39);
-sgr.$resetBg = sgr(49);
+sgr.reset = sgr(0);
+sgr.resetFg = sgr(39);
+sgr.resetBg = sgr(49);
 
-sgr.$black = sgr(30);
-sgr.$red = sgr(31);
-sgr.$green = sgr(32);
-sgr.$yellow = sgr(33);
-sgr.$blue = sgr(34);
-sgr.$magenta = sgr(35);
-sgr.$cyan = sgr(36);
-sgr.$white = sgr(37);
-sgr.$blackHL = sgr(90);
-sgr.$redHL = sgr(91);
-sgr.$greenHL = sgr(92);
-sgr.$yellowHL = sgr(93);
-sgr.$blueHL = sgr(94);
-sgr.$magentaHL = sgr(95);
-sgr.$cyanHL = sgr(96);
-sgr.$whiteHL = sgr(97);
-sgr.$bgBlack = sgr(40);
-sgr.$bgRed = sgr(41);
-sgr.$bgGreen = sgr(42);
-sgr.$bgYellow = sgr(43);
-sgr.$bgBlue = sgr(44);
-sgr.$bgMagenta = sgr(45);
-sgr.$bgCyan = sgr(46);
-sgr.$bgWhite = sgr(47);
-sgr.$bgBlackHL = sgr(100);
-sgr.$bgRedHL = sgr(101);
-sgr.$bgGreenHL = sgr(102);
-sgr.$bgYellowHL = sgr(103);
-sgr.$bgBlueHL = sgr(104);
-sgr.$bgMagentaHL = sgr(105);
-sgr.$bgCyanHL = sgr(106);
-sgr.$bgWhiteHL = sgr(107);
+sgr.black = sgr(30);
+sgr.red = sgr(31);
+sgr.green = sgr(32);
+sgr.yellow = sgr(33);
+sgr.blue = sgr(34);
+sgr.magenta = sgr(35);
+sgr.cyan = sgr(36);
+sgr.white = sgr(37);
+sgr.blackHL = sgr(90);
+sgr.redHL = sgr(91);
+sgr.greenHL = sgr(92);
+sgr.yellowHL = sgr(93);
+sgr.blueHL = sgr(94);
+sgr.magentaHL = sgr(95);
+sgr.cyanHL = sgr(96);
+sgr.whiteHL = sgr(97);
+sgr.bgBlack = sgr(40);
+sgr.bgRed = sgr(41);
+sgr.bgGreen = sgr(42);
+sgr.bgYellow = sgr(43);
+sgr.bgBlue = sgr(44);
+sgr.bgMagenta = sgr(45);
+sgr.bgCyan = sgr(46);
+sgr.bgWhite = sgr(47);
+sgr.bgBlackHL = sgr(100);
+sgr.bgRedHL = sgr(101);
+sgr.bgGreenHL = sgr(102);
+sgr.bgYellowHL = sgr(103);
+sgr.bgBlueHL = sgr(104);
+sgr.bgMagentaHL = sgr(105);
+sgr.bgCyanHL = sgr(106);
+sgr.bgWhiteHL = sgr(107);

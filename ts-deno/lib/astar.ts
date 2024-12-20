@@ -78,7 +78,7 @@ export function aStar<T>({start, isEnd, nbsDists, nbs, dist, hash, score, search
       const nbDist = node.dist + d;
       const nbHash = hash(nb);
       const sn = seen.get(nbHash) ?? Infinity;
-      if (sn >= nbDist) {
+      if (sn > nbDist || (sn === nbDist && searchMode !== "singleBest")) {
         queue.push({
           state: nb,
           dist: nbDist,

@@ -32,12 +32,12 @@ const PARSE_MAP: Record<string, Field> = {
 }
 
 const drawField = (f: number | undefined, pos: Vector, curPos?: Vector) => {
-  if (curPos?.eq(pos)) return fmtt('$blue', '@');
+  if (curPos?.eq(pos)) return fmtt('§{blue}@');
   switch(f) {
     case Field.FLOOR: return '.';
     case Field.OBSTACLE: return '#';
-    case Field.NEW_OBSTACLE: return fmtt('$red', 'O');
-    case Field.CURRENT: return fmtt('$blue', '@');
+    case Field.NEW_OBSTACLE: return fmtt('§{red}O');
+    case Field.CURRENT: return fmtt('§{blue}@');
     case Field.UP: return '^';
     case Field.DOWN: return 'v';
     case Field.LEFT: return '<';

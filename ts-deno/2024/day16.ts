@@ -55,7 +55,7 @@ const parse = (s: string) => {
 
 {
   const {maze, end, start, dir} = parse(sample1);
-  lognb(maze.pprint((c, v) => v.eq(end) ? fmtt('$red','E') : v.eq(start) ? fmtt('$blue', dir.char) : fmtt('$blackHL' ,c!)))
+  lognb(maze.pprint((c, v) => v.eq(end) ? fmtt('§{red}E') : v.eq(start) ? fmtt('§blue', dir.char) : fmtt('§blackHL' ,c!)))
 }
 // %%
 
@@ -76,7 +76,7 @@ const solveA = (s: string, print = false) => {
     for (const [p, d] of path) {
       maze.set(p, d.char);
     }
-    log(maze.pprint((c, v) => v.eq(start) ? fmtt('$blue', c) : v.eq(end) ? fmtt('$red', c) : fmtt(c !== '.' && c !== '#' ? '$yellow' : '', c!)))
+    log(maze.pprint((c, v) => v.eq(start) ? fmtt('§blue', c) : v.eq(end) ? fmtt('§red', c) : fmtt(c !== '.' && c !== '#' ? '§yellow' : '', c!)))
   }
   return cost;
 }
@@ -107,7 +107,7 @@ const solveB = (s: string, print = false) => {
       maze.set(p, 'O');
     }
   }
-  print && log(maze.pprint(c => c === 'O' ? fmtt('$yellow', 'O') : c!))
+  print && log(maze.pprint(c => c === 'O' ? fmtt('§{yellow}O') : c!))
 
   return maze.findAll(c => c === 'O').toArray().length;
 }

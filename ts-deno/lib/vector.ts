@@ -5,7 +5,8 @@ export type Vec = VecObject | VecTuple;
 export type VecObject = {x: number, y: number};
 export type VecTuple = [x: number, y: number];
 
-const isVecTuple = (v: Vec): v is VecTuple => Array.isArray(v) && v.length === 2;
+const isVecTuple = (v: unknown): v is VecTuple => Array.isArray(v) && v.length === 2 && typeof v[0] === "number" && typeof v[1] === "number";
+const isVecObject = (v: unknown): v is VecObject => v != null && typeof (v as {x: unknown}).x === "number" && typeof (v as {y: unknown}).y === "number"
 
 export const vx = (v: Vec) => isVecTuple(v) ? v[0] : v.x;
 export const vy = (v: Vec) => isVecTuple(v) ? v[1] : v.y;
@@ -39,12 +40,31 @@ export const neighbours = (v: Vec): Vector[] => {
 // deno-lint-ignore no-explicit-any
 const VecTupleConstructor: new (...args: VecTuple) => VecTuple = Array as any;
 
+const VEC_RE = /^\[?\(?([^\[\(\,]+), ?([^\]\)]+)\]?\)?$/
+
 export class Vector extends VecTupleConstructor implements VecObject, VecTuple, Hashable {
   constructor(x: number | Vec, y?: number) {
     super(
       typeof x === 'number' ? x : vx(x),
       typeof x === 'number' ? y ?? x : vy(x)
     );
+  }
+
+  static from(o: Vector | Vec | string): Vector {
+    if (o instanceof Vector) return o.clone();
+    if (isVecTuple(o)) return new Vector(o[0], o[1]);
+    if (isVecObject(o)) return new Vector(o.x, o.y);
+    if (typeof o === "string") {
+      const m = o.match(VEC_RE);
+      if (m) {
+        const a = +(m[1]);
+        const b = +(m[2]);
+        if (!Number.isNaN(a) && !Number.isNaN(b)) {
+          return new Vector(a, b);
+        }
+      }
+    }
+    throw new Error(`couldn't parse Vector from ${o}`)
   }
 
   clone() {
@@ -71,7 +91,7 @@ export class Vector extends VecTupleConstructor implements VecObject, VecTuple, 
     return Math.hypot(vx(v) - this[0], vy(v) - this[1]);
   }
   manhattan(v: Vec) {
-    return Math.abs(vx(v) - this[0]) + Math.abs(vy(v) - this[0]);
+    return Math.abs(vx(v) - this[0]) + Math.abs(vy(v) - this[1]);
   }
 
   orthogonals() { return orthogonals(this); }

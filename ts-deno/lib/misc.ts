@@ -49,15 +49,17 @@ const _countLines = (s: string) => {
   return nls;
 }
 export const display = async (target: unknown, did?: string) => {
-  _lastDisplayId = did ?? `ulogDid-${Math.floor(Math.random() * 100000)}`;
+  if (!did) {
+    did = _lastDisplayId = `ulogDid-${Math.floor(Math.random() * 100000)}`;
+  }
   if (isJupyter && typeof target === "string") {
     await Deno.jupyter.broadcast("display_data", {
       data: { "text/plain": target },
       metadata: {},
-      transient: { display_id: _lastDisplayId },
+      transient: { display_id: did },
     });
   } else if (isJupyter) {
-    await Deno.jupyter.display(target ?? '', {display_id: _lastDisplayId});
+    await Deno.jupyter.display(target ?? '', {display_id: did});
   } else if (isVerbose) {
     const trg = typeof target === "string" ? target : (target?.toString() ?? (''+target));
     console.log(trg);
