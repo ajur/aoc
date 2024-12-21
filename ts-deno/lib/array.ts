@@ -10,7 +10,8 @@ declare global {
     sum(): number;
     count(p?: ArrayPredicate<T>): number;
     combinations(k: number): T[][];
-    permutations(k?: number, withRepeats?: boolean): IterableIterator<T[]>;
+    // permutations(k?: number, withRepeats?: boolean): IterableIterator<T[]>;
+    permutations(): IterableIterator<T[]>;
     isSorted(compareFn?: (a: T, b: T) => number): boolean;
     unique(eq?: (a: T, b: T) => boolean): T[];
     remove(from: number, to?: number): T[];
@@ -58,14 +59,18 @@ Array.prototype.combinations = function<T>(this: T[], k: number) {
   ];
 }
 
-Array.prototype.permutations = function*<T>(this: T[], k?: number, withRepeats = false): IterableIterator<T[]> {
-  k ??= this.length;
-
-  if (k === this.length && !withRepeats) {
-    yield* generatePermutations(this);
-  }
-  throw new Error("NOT IMPLEMENTED");
+Array.prototype.permutations = function*<T>(this: T[]): IterableIterator<T[]> {
+  yield* generatePermutations(this);
 }
+
+// Array.prototype.permutations = function*<T>(this: T[], k?: number, withRepeats = false): IterableIterator<T[]> {
+//   k ??= this.length;
+
+//   if (k === this.length && !withRepeats) {
+//     yield* generatePermutations(this);
+//   }
+//   throw new Error("NOT IMPLEMENTED");
+// }
 
 Array.prototype.isSorted = function<T>(this: T[], compareFn = ascend): boolean {
   for (let i = 1; i < this.length; i++) {
