@@ -35,3 +35,4 @@ String.prototype.trim = function(c?: string): string {
 
 export const asInt = (s: string): number => s.toInt();
 export const asNum = (s: string): number => s.toNum();
+export const splitted = (c: string) => (s: string): string[] => s.split(c);

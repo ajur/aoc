@@ -1,6 +1,5 @@
 
 import { BinaryHeap, ascend } from "@std/data-structures";
-import { assertEquals } from "@std/assert/equals";
 
 export type AStarSearchMode = 'singleBest' | 'allBest' | 'all';
 export type AStarSolution<T> = [dist: number, path: T[]];
