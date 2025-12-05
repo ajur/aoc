@@ -1,5 +1,4 @@
 import { assertEquals } from "@std/assert";
-
 // %%
 
 type FromArg = string
@@ -12,11 +11,19 @@ export class Interval {
   readonly minClosed: boolean;
   readonly maxClosed: boolean;
 
-  constructor(min = Infinity, max = -Infinity, minClosed = true, maxClosed = false) {
-    this.min = min;
-    this.max = max;
-    this.minClosed = minClosed;
-    this.maxClosed = maxClosed;
+  constructor(min = 0, max = 0, minClosed = true, maxClosed = false) {
+    if (min > max) {
+      this.min = this.max = 0;
+      this.minClosed = this.maxClosed = false;
+    } else if (min === max) {
+      this.min = this.max = min;
+      this.minClosed = this.maxClosed = minClosed || maxClosed;
+    } else {
+      this.min = min;
+      this.max = max;
+      this.minClosed = minClosed;
+      this.maxClosed = maxClosed;
+    }
   }
 
   static from(ob: FromArg | FromArg[] | Interval[]): Interval {
@@ -104,8 +111,7 @@ export class MultiInterval implements Interval {
   readonly ranges: Interval[];
 
   constructor(intervals?: Interval[]) {
-    this.ranges = intervals ?? [];
-    // todo deduplicate and sort
+    this.ranges = simplifyIntervals(intervals || []);
   }
 
   get isEmpty(): boolean {
@@ -158,13 +164,13 @@ export class MultiInterval implements Interval {
   }
 }
 
-function combineIntervals(...intervals: Interval[]): Interval {
+function simplifyIntervals(intervals: Interval[]): Interval[] {
   const ranges = intervals
     .flatMap(i => i instanceof MultiInterval ? i.ranges : i)
     .filter(invl => !invl.isEmpty);
 
-  if (ranges.length === 0) return new Interval();
-  if (ranges.length === 1) return ranges[0];
+  if (ranges.length === 0) return [];
+  if (ranges.length === 1) return [ranges[0]];
 
   ranges.sort((r1, r2) => {
     if (r2.min !== r1.min) return r2.min - r1.min;
@@ -173,12 +179,7 @@ function combineIntervals(...intervals: Interval[]): Interval {
     return 0;
   });
 
-  // console.log(ranges);
-
   const out: Interval[] = [ranges.pop()!];
-
-  // console.log(ranges)
-  // console.log(out);
 
   while(ranges.length > 0) {
     const prev = out.pop()!
@@ -205,8 +206,16 @@ function combineIntervals(...intervals: Interval[]): Interval {
     }
     throw new Error(`Unexpected merging case with intervals: prev=${prev.toString()} next=${next.toString()}`)
   }
+  return out
+}
 
-  return out.length === 1 ? out[0] : new MultiInterval(out);
+function combineIntervals(...intervals: Interval[]): Interval {
+  const out = simplifyIntervals(intervals);
+  return out.length === 0
+    ? new Interval()
+    : out.length === 1
+      ? out[0]
+      : new MultiInterval(out);
 }
 // %%
 
