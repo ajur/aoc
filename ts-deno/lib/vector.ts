@@ -170,9 +170,11 @@ export class Direction extends Vector {
   static SE = new Direction(1, 1, 'SE', 'J');
   static SW = new Direction(-1, 1, 'SW', 'L');
 
-  static from(c: string | Vector | Vec): Direction | undefined {
+  static override from(c: string | Vector | Vec): Direction {
     const hsh = typeof c === 'string' ? c : c instanceof Vector ? c[$hash]() : (vx(c) + ',' + vy(c));
-    return Direction.str2dir.get(hsh);
+    const dir = Direction.str2dir.get(hsh);
+    if (!dir) throw new Error("Invalid direction");
+    return dir;
   }
 
   fw() { return this; }

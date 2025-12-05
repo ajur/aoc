@@ -1,4 +1,4 @@
-import { asInt, lognb, Grid, Vec } from '#lib';
+import { lognb, Grid, Vec } from '#lib';
 
 // %%
 

@@ -46,4 +46,4 @@ Number.prototype.firstNDigits = function(this: number, d: number) {
 Number.lastNDigits = (d: number) => (n: number) => n.lastNDigits(d);
 Number.firstNDigits = (d: number) => (n: number) => n.firstNDigits(d);
 
-export {};
+export {}
