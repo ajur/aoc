@@ -8,6 +8,12 @@ The code here is not meant to be pretty, particularly performant or in any way s
 
 I just like programming puzzles, and learning, so I often combine both.
 
+### 2025 - Same workflow as last year
+
+TS with Zed and Deno was fairly good experience, so I've sticked to it.
+
+Also, I've welcomed shortened version this year.
+
 ### 2024 - Back to TS, with Deno2
 
 This time trying to build some proper lib for faster solving aoc...

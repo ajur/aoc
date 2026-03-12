@@ -8,6 +8,12 @@ The code here is not meant to be pretty, particularly performant or in any way s
 
 I just like programming puzzles, and learning, so I often combine both.
 
+### 2025 - Same workflow as last year
+
+TS with Zed and Deno was fairly good experience, so I've sticked to it.
+
+Also, I've welcomed shortened version this year.
+
 ### 2024 - Back to TS, with Deno2
 
 This time trying to build some proper lib for faster solving aoc...
@@ -50,7 +56,28 @@ using fantastic [ObservableHQ notebooks](https://observablehq.com/).
     <tr><th>Year</th><th>Day</th><th>Solution source</th></tr>
   </thead>
   <tbody>
-    <tr><td rowspan="13" style="vertical-align: top"><a href="https://adventofcode.com/2024">2024</a></td><td><a href="https://adventofcode.com/2024/day/13">day 13</a></td><td><a href=./ts-deno/2024/day13.ts>ts-deno</a></td></tr>
+    <tr><td rowspan="12" style="vertical-align: top"><a href="https://adventofcode.com/2025">2025</a></td><td><a href="https://adventofcode.com/2025/day/12">day 12</a></td><td><a href=./ts-deno/2025/day12.ts>ts-deno</a></td></tr>
+    <tr><td><a href="https://adventofcode.com/2025/day/11">day 11</a></td><td><a href=./ts-deno/2025/day11.ts>ts-deno</a></td></tr>
+    <tr><td><a href="https://adventofcode.com/2025/day/10">day 10</a></td><td><a href=./ts-deno/2025/day10.ts>ts-deno</a></td></tr>
+    <tr><td><a href="https://adventofcode.com/2025/day/9">day 9</a></td><td><a href=./ts-deno/2025/day09.ts>ts-deno</a></td></tr>
+    <tr><td><a href="https://adventofcode.com/2025/day/8">day 8</a></td><td><a href=./ts-deno/2025/day08.ts>ts-deno</a></td></tr>
+    <tr><td><a href="https://adventofcode.com/2025/day/7">day 7</a></td><td><a href=./ts-deno/2025/day07.ts>ts-deno</a></td></tr>
+    <tr><td><a href="https://adventofcode.com/2025/day/6">day 6</a></td><td><a href=./ts-deno/2025/day06.ts>ts-deno</a></td></tr>
+    <tr><td><a href="https://adventofcode.com/2025/day/5">day 5</a></td><td><a href=./ts-deno/2025/day05.ts>ts-deno</a></td></tr>
+    <tr><td><a href="https://adventofcode.com/2025/day/4">day 4</a></td><td><a href=./ts-deno/2025/day04.ts>ts-deno</a></td></tr>
+    <tr><td><a href="https://adventofcode.com/2025/day/3">day 3</a></td><td><a href=./ts-deno/2025/day03.ts>ts-deno</a></td></tr>
+    <tr><td><a href="https://adventofcode.com/2025/day/2">day 2</a></td><td><a href=./ts-deno/2025/day02.ts>ts-deno</a></td></tr>
+    <tr><td><a href="https://adventofcode.com/2025/day/1">day 1</a></td><td><a href=./ts-deno/2025/day01.ts>ts-deno</a></td></tr>
+    <tr><td rowspan="22" style="vertical-align: top"><a href="https://adventofcode.com/2024">2024</a></td><td><a href="https://adventofcode.com/2024/day/22">day 22</a></td><td><a href=./ts-deno/2024/day22.ts>ts-deno</a></td></tr>
+    <tr><td><a href="https://adventofcode.com/2024/day/21">day 21</a></td><td><a href=./ts-deno/2024/day21.ts>ts-deno</a></td></tr>
+    <tr><td><a href="https://adventofcode.com/2024/day/20">day 20</a></td><td><a href=./ts-deno/2024/day20.ts>ts-deno</a></td></tr>
+    <tr><td><a href="https://adventofcode.com/2024/day/19">day 19</a></td><td><a href=./ts-deno/2024/day19.ts>ts-deno</a></td></tr>
+    <tr><td><a href="https://adventofcode.com/2024/day/18">day 18</a></td><td><a href=./ts-deno/2024/day18.ts>ts-deno</a></td></tr>
+    <tr><td><a href="https://adventofcode.com/2024/day/17">day 17</a></td><td><a href=./ts-deno/2024/day17.ts>ts-deno</a></td></tr>
+    <tr><td><a href="https://adventofcode.com/2024/day/16">day 16</a></td><td><a href=./ts-deno/2024/day16.ts>ts-deno</a></td></tr>
+    <tr><td><a href="https://adventofcode.com/2024/day/15">day 15</a></td><td><a href=./ts-deno/2024/day15.ts>ts-deno</a></td></tr>
+    <tr><td><a href="https://adventofcode.com/2024/day/14">day 14</a></td><td><a href=./ts-deno/2024/day14.ts>ts-deno</a></td></tr>
+    <tr><td><a href="https://adventofcode.com/2024/day/13">day 13</a></td><td><a href=./ts-deno/2024/day13.ts>ts-deno</a></td></tr>
     <tr><td><a href="https://adventofcode.com/2024/day/12">day 12</a></td><td><a href=./ts-deno/2024/day12.ts>ts-deno</a></td></tr>
     <tr><td><a href="https://adventofcode.com/2024/day/11">day 11</a></td><td><a href=./ts-deno/2024/day11.ts>ts-deno</a></td></tr>
     <tr><td><a href="https://adventofcode.com/2024/day/10">day 10</a></td><td><a href=./ts-deno/2024/day10.ts>ts-deno</a></td></tr>
