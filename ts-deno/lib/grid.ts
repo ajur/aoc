@@ -15,6 +15,45 @@ export const transpose = <T>(g: T[][]): T[][] => {
   return out;
 };
 
+export const gridRotateCW = <T>(g: T[][]): T[][] => {
+  const rows = g.length;
+  const cols = Math.max(...g.map(l => l.length));
+  const out = new Array(cols);
+  for (let col = 0; col < cols; ++col) {
+    out[col] = new Array(rows);
+    for (let row = 0; row < rows; ++row) {
+      out[col][rows - row - 1] = g[row][col];
+    }
+  }
+  return out;
+}
+
+export const gridFlipH = <T>(g: T[][]): T[][] => {
+  const rows = g.length;
+  const cols = Math.max(...g.map(l => l.length));
+  const out = new Array(rows);
+  for (let row = 0; row < rows; ++row) {
+    out[row] = new Array(cols);
+    for (let col = 0; col < cols; ++col) {
+      out[row][cols - col - 1] = g[row][col]
+    }
+  }
+  return out;
+}
+
+export const gridFlipV = <T>(g: T[][]): T[][] => {
+  const rows = g.length;
+  const cols = Math.max(...g.map(l => l.length));
+  const out = new Array(rows);
+  for (let row = 0; row < rows; ++row) {
+    out[row] = new Array(cols);
+    for (let col = 0; col < cols; ++col) {
+      out[row][col] = g[rows - row - 1][col]
+    }
+  }
+  return out;
+}
+
 export const isWellFormdGrid = (g: unknown[][]): boolean => {
   if (!Array.isArray(g) || g.length === 0 || !Array.isArray(g[0]) || g[0].length === 0) return false;
   const l0 = g[0].length;

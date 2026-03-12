@@ -13,3 +13,4 @@ export * from './grid.ts';
 export * from './astar.ts';
 export * as ansi from './ansi.ts';
 export { fmtt } from './ansi.ts';
+export * from './display.ts';

@@ -1,4 +1,4 @@
-import { Grid, Vector, tc, lognb, asInt, eq, HashMap } from "#lib";
+import { Grid, Vector, fmtt, lognb, asInt, eq, HashMap } from "#lib";
 // %%
 
 const sample = `
@@ -16,7 +16,7 @@ const parse = (s: string) => Grid.fromString(s.trim(), asInt)
 
 const printTrail = (g: Grid<number>, trail: Vector[]) => {
   const ansSet = new HashMap<Vector, boolean>(trail.map(v => [v,true]));
-  return g.pprint((c, v) => ansSet.has(v) ? tc.bgBrightRed(''+c) : ''+c);
+  return g.pprint((c, v) => fmtt(ansSet.has(v) ? fmtt.c.bgRedHL : '', c));
 }
 lognb(printTrail(parse(sample), [new Vector(2, 0), new Vector(3, 0), new Vector(3, 1)]))
 // %%

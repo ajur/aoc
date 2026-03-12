@@ -64,9 +64,8 @@ export const fmtt = (...args: unknown[]) =>
     if (typeof arg === "string") {
       // deno-lint-ignore no-explicit-any
       return arg.replace(/§{?(\w+)}?/g, (_match, group) => (sgr as any)[group] || group)
-    } else {
-      return arg?.toString() ?? '' + arg;
     }
+    return arg?.toString() ?? '' + arg;
   }).join('') + sgr.reset;
 
 fmtt.c = sgr;  // for less imports

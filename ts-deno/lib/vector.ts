@@ -46,9 +46,11 @@ export class Vector extends VecTupleConstructor implements VecObject, VecTuple, 
   constructor(x: number | Vec, y?: number) {
     super(
       typeof x === 'number' ? x : vx(x),
-      typeof x === 'number' ? y ?? x : vy(x)
+      typeof x === 'number' ? (y ?? x) : vy(x)
     );
   }
+
+  static ZERO = new Vector(0);
 
   static from(o: Vector | Vec | string): Vector {
     if (o instanceof Vector) return o.clone();
@@ -138,7 +140,6 @@ export class Vector extends VecTupleConstructor implements VecObject, VecTuple, 
     return new Vector(Math.round(this[0]), Math.round(this[1]));
   }
 }
-
 
 export class Direction extends Vector {
   name: string = '?';

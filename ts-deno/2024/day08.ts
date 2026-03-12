@@ -1,4 +1,4 @@
-import { Grid, Vector, Vec, tc, log, lognb } from "#lib";
+import { Grid, Vector, Vec, fmtt, log, lognb } from "#lib";
 // %%
 const sample = `
 ............
@@ -19,7 +19,7 @@ const parse = (s: string) => Grid.fromString(s.trim(), c => c)
 
 const printGrid = (g: Grid<string>, ans: Vec[] = []) => {
   const ansSet = new Set(ans.map(an => an.toString()));
-  return g.pprint((c, v) => ansSet.has(v.toString()) ? tc.bgBrightRed(c) : c);
+  return g.pprint((c, v) => fmtt(ansSet.has(v.toString()) ? fmtt.c.bgRedHL : '', c));
 }
 
 lognb(printGrid(parse(sample), [[2,2]]))

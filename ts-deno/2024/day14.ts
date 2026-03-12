@@ -1,6 +1,6 @@
 // %%
 import { createCanvas } from "@gfx/canvas";
-import { Vector, Vec, vx, vy, display, updateDisplay } from "#lib";
+import { Vector, Vec, vx, vy, display, updateDisplay, timeout, isJupyter } from "#lib";
 // %%
 
 const sample = `
@@ -117,8 +117,11 @@ const animateRobots = async (size: Vec, robots: Robot[] = []) => {
       }
     }
 
-    if (maxCount > 10) {
+    if (maxCount > 3 && isJupyter) {
       await updateDisplay(drawState());
+      await timeout(100);
+    }
+    if (maxCount > 10) {
       return i + 1;
     }
   }
